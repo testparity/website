@@ -1,0 +1,62 @@
+:root {
+  --vp-c-brand-1: #10b981;
+  --vp-c-brand-2: #059669;
+  --vp-c-brand-3: #047857;
+  --vp-c-brand-soft: rgba(16, 185, 129, 0.14);
+
+  --vp-button-brand-bg: #10b981;
+  --vp-button-brand-hover-bg: #059669;
+
+  --vp-home-hero-name-color: transparent;
+  --vp-home-hero-name-background: linear-gradient(135deg, #10b981, #047857);
+
+  --vp-home-hero-image-background-image: linear-gradient(135deg, rgba(16, 185, 129, 0.2), rgba(4, 120, 87, 0.2));
+  --vp-home-hero-image-filter: blur(44px);
+}
+
+.dark {
+  --vp-c-brand-1: #34d399;
+  --vp-c-brand-2: #10b981;
+  --vp-c-brand-3: #6ee7b7;
+  --vp-c-brand-soft: rgba(52, 211, 153, 0.14);
+
+  --vp-button-brand-bg: #10b981;
+  --vp-button-brand-hover-bg: #34d399;
+
+  --vp-home-hero-name-background: linear-gradient(135deg, #34d399, #10b981);
+
+  --vp-home-hero-image-background-image: linear-gradient(135deg, rgba(52, 211, 153, 0.15), rgba(16, 185, 129, 0.15));
+}
+
+/* Hero section gradient */
+.VPHero .main {
+  position: relative;
+}
+
+.VPHero .name .clip {
+  font-weight: 800;
+}
+
+/* Feature cards */
+.VPFeatures .VPFeature {
+  border-radius: 12px;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.VPFeatures .VPFeature:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 24px rgba(16, 185, 129, 0.12);
+}
+
+.VPFeature .icon {
+  font-size: 1.5rem;
+}
+
+/* Subtle hero background gradient */
+.VPHome .VPHero {
+  background: linear-gradient(180deg, rgba(16, 185, 129, 0.04) 0%, transparent 60%);
+}
+
+.dark .VPHome .VPHero {
+  background: linear-gradient(180deg, rgba(16, 185, 129, 0.06) 0%, transparent 60%);
+}
