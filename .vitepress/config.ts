@@ -48,6 +48,17 @@ export default defineConfig({
     nav: [
       { text: 'Guide', link: '/guide/getting-started' },
       { text: 'Specs', link: '/specs/' },
+      {
+        text: 'Variants',
+        items: [
+          { text: 'All Variations', link: '/variants/' },
+          { text: '01 Ledger', link: '/variants/ledger' },
+          { text: '02 Developer', link: '/variants/developer' },
+          { text: '03 Manual', link: '/variants/manual' },
+          { text: '04 Sample Lab', link: '/variants/lab' },
+          { text: '05 CI Room', link: '/variants/ci' },
+        ],
+      },
       { text: 'Samples', link: 'https://github.com/testparity/samples' },
       { text: 'GitHub', link: 'https://github.com/testparity/cli' },
     ],
