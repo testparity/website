@@ -29,4 +29,27 @@ title: CI Landing
     <article><span>Block</span><p>CI fails on missing or weak matched coverage.</p></article>
     <article><span>Review</span><p>JSON names the exact rule and file.</p></article>
   </section>
+
+  <section class="ci-room">
+    <div class="ci-log">
+      <div class="lpv-panel-head"><span>github actions</span><code>parity</code></div>
+      <pre><code>Run php vendor/bin/parity check --format=json&#10;&#10;Services: 2 passed, 1 failed&#10;&#10;FAIL app/Services/CheckoutGateway.php&#10;  expected test: tests/Unit/Services/CheckoutGatewayTest.php&#10;  matched coverage: 18%&#10;  required: 70%&#10;&#10;Error: Process completed with exit code 1.</code></pre>
+    </div>
+    <div>
+      <p class="lpv-kicker">Reviewer experience</p>
+      <h2>CI should say what changed, where, and why it cannot ship.</h2>
+      <p>Parity turns weak test ownership into a concrete release failure. The author can fix the belonging test directly instead of chasing an abstract quality score.</p>
+    </div>
+  </section>
+
+  <section class="ci-policies">
+    <article><span>Required</span><strong>test-exists</strong><p>Every application file maps to a belonging test file.</p></article>
+    <article><span>Optional</span><strong>covers-class</strong><p>PHPUnit attributes or Pest covers declarations prove ownership intent.</p></article>
+    <article><span>Required</span><strong>matched-coverage</strong><p>The belonging test covers enough executable lines in its file.</p></article>
+  </section>
+
+  <section class="lpv-callout">
+    <h2>Best for teams already bought into release gates.</h2>
+    <p>The CI room style is sharper and more operational. It works well for DevOps and platform audiences, but should be paired with a clearer product explanation for first-time visitors.</p>
+  </section>
 </main>

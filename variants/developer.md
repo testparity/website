@@ -35,4 +35,44 @@ title: Developer Landing
       </ul>
     </div>
   </section>
+
+  <section class="developer-flow">
+    <article>
+      <span>1</span>
+      <strong>Keep your test runner</strong>
+      <p>Use Pest, PHPUnit, Jest, Mocha, Vitest, or Cargo exactly as before. Parity only needs the coverage file they already produce.</p>
+    </article>
+    <article>
+      <span>2</span>
+      <strong>Model ownership</strong>
+      <p>Declare where application files live, where belonging tests live, and which rule minimums should block a merge.</p>
+    </article>
+    <article>
+      <span>3</span>
+      <strong>Read the failure</strong>
+      <p>The output points to the exact source/test pair instead of asking the author to interpret a global percentage.</p>
+    </article>
+  </section>
+
+  <section class="lpv-codegrid reverse">
+    <div class="lpv-panel">
+      <h2>Output designed for scripts and humans.</h2>
+      <p>Local runs can use table output. CI can ingest JSON and annotate the pull request with file-level accountability.</p>
+      <ul>
+        <li><code>passed</code> for release state</li>
+        <li><code>source</code> and <code>test</code> for the exact pair</li>
+        <li><code>rules</code> for policy-specific values</li>
+      </ul>
+    </div>
+    <div class="lpv-terminal">
+      <div class="lpv-panel-head"><span>json</span><code>failure</code></div>
+      <pre><code>{&#10;  "source": "app/Services/CheckoutGateway.php",&#10;  "test": "tests/Unit/Services/CheckoutGatewayTest.php",&#10;  "rules": {&#10;    "matched-coverage": {&#10;      "value": "18%",&#10;      "min": "70%",&#10;      "passed": false&#10;    }&#10;  }&#10;}</code></pre>
+    </div>
+  </section>
+
+  <section class="developer-commands">
+    <article><code>php vendor/bin/parity list</code><span>Preview source/test pairs before enforcing.</span></article>
+    <article><code>php vendor/bin/parity check</code><span>Run the release gate locally or in CI.</span></article>
+    <article><code>php vendor/bin/parity check --format=json</code><span>Emit machine-readable failures.</span></article>
+  </section>
 </main>
