@@ -6,6 +6,7 @@ title: Sample Lab Landing
 <main class="lpv lpv-lab">
   <section class="lpv-hero lab-hero">
     <div>
+      <p class="pest-note">Runnable examples, not screenshots</p>
       <p class="lpv-kicker">Variation 04 / Sample Lab</p>
       <h1>Copy a working sample before you write your own config.</h1>
       <p class="lpv-lede">Parity ships with runnable examples across PHP, JavaScript, TypeScript, Rust, Laravel, Vite, and AdonisJS-style layouts. Each sample includes code, tests, coverage output, config, and expected result.</p>
@@ -22,6 +23,15 @@ title: Sample Lab Landing
       <article><span>TS</span><strong>vitest</strong><em>Vite project</em></article>
       <article><span>Rust</span><strong>cargo</strong><em>Cobertura XML</em></article>
     </div>
+  </section>
+
+  <section class="pest-proof-strip" aria-label="Sample coverage">
+    <span>Sample folders include</span>
+    <strong>code/</strong>
+    <strong>tests/</strong>
+    <strong>coverage</strong>
+    <strong>parity.yaml</strong>
+    <strong>result.md</strong>
   </section>
 
   <section class="lpv-strip">

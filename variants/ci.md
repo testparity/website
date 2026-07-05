@@ -6,6 +6,7 @@ title: CI Landing
 <main class="lpv lpv-ci">
   <section class="lpv-hero ci-hero">
     <div>
+      <p class="pest-note">Beautiful failures for test ownership</p>
       <p class="lpv-kicker">Variation 05 / CI Room</p>
       <h1>Make weak test ownership fail before merge.</h1>
       <p class="lpv-lede">Parity gives CI a concrete release rule: every application file must have its belonging test, and that test must cover enough of the file to count.</p>
@@ -21,6 +22,14 @@ title: CI Landing
       <div class="incident-meter"><i style="width:18%"></i><strong>18% / 70%</strong></div>
       <small>Fix by testing the gateway behavior in the belonging test, not by raising unrelated global coverage.</small>
     </div>
+  </section>
+
+  <section class="pest-proof-strip" aria-label="CI outputs">
+    <span>Designed for pull requests</span>
+    <strong>Exit codes</strong>
+    <strong>JSON</strong>
+    <strong>Tables</strong>
+    <strong>Exact file paths</strong>
   </section>
 
   <section class="ci-flow">

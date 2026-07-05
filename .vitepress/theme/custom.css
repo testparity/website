@@ -1922,3 +1922,251 @@
     display: none;
   }
 }
+
+/* Pest-inspired visual direction for landing variants */
+.lpv {
+  position: relative;
+  width: min(1240px, calc(100% - 28px));
+  margin: 24px auto 72px;
+  padding: clamp(34px, 6vw, 78px);
+  overflow: hidden;
+  border: 1px solid rgba(110, 231, 183, 0.13);
+  border-radius: 36px;
+  background:
+    radial-gradient(circle at 50% 0%, rgba(16, 185, 129, 0.18), transparent 28rem),
+    radial-gradient(circle at 18% 24%, rgba(34, 197, 94, 0.12), transparent 24rem),
+    linear-gradient(180deg, #06110d 0%, #020604 100%);
+  box-shadow: 0 34px 120px rgba(2, 6, 4, 0.42);
+}
+
+.lpv::before {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  content: "";
+  background-image:
+    linear-gradient(rgba(110, 231, 183, 0.055) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(110, 231, 183, 0.055) 1px, transparent 1px);
+  background-size: 44px 44px;
+  mask-image: linear-gradient(180deg, rgba(0, 0, 0, 0.8), transparent 72%);
+}
+
+.lpv > * {
+  position: relative;
+}
+
+.lpv-hero {
+  min-height: auto;
+  padding: 26px 0 34px;
+  text-align: center;
+}
+
+.two-col,
+.split-console,
+.lab-hero,
+.ci-hero {
+  grid-template-columns: 1fr;
+  justify-items: center;
+}
+
+.lpv h1 {
+  max-width: 980px;
+  margin-inline: auto;
+  color: #f2fff8;
+  font-size: clamp(3.4rem, 9vw, 7.8rem);
+  line-height: 0.9;
+  letter-spacing: -0.09em;
+}
+
+.lpv h2,
+.lpv h3,
+.lpv strong {
+  color: #f2fff8;
+}
+
+.lpv-lede,
+.ledger-audit p:not(.lpv-kicker),
+.lab-showcase p,
+.ci-room p,
+.lpv-panel p,
+.lpv-panel li,
+.lpv-strip p,
+.audit-steps em,
+.coverage-compare p,
+.developer-flow p,
+.developer-commands span,
+.manual-chapters p,
+.manual-reference span,
+.folder-card span,
+.matrix-row,
+.ci-policies p {
+  color: #acc9bd;
+}
+
+.lpv-lede {
+  margin-inline: auto;
+  font-size: 1.2rem;
+}
+
+.pest-note {
+  display: inline-flex;
+  align-items: center;
+  width: fit-content;
+  margin: 0 auto 18px;
+  padding: 8px 13px;
+  border: 1px solid rgba(110, 231, 183, 0.18);
+  border-radius: 999px;
+  background: rgba(16, 185, 129, 0.08);
+  color: #9ff5c8;
+  font-size: 0.83rem;
+  font-weight: 750;
+}
+
+.pest-note::after {
+  content: " ->";
+  margin-left: 8px;
+  color: #34d399;
+}
+
+.lpv-kicker,
+.coverage-compare span,
+.developer-flow span,
+.manual-chapters span,
+.ci-policies span,
+.variant-index span,
+.lpv-strip span,
+.manual-board span,
+.sample-stack span {
+  color: #34d399;
+}
+
+.lpv-actions {
+  justify-content: center;
+}
+
+.lpv-actions a {
+  border-color: rgba(110, 231, 183, 0.16);
+  background: rgba(6, 17, 13, 0.84);
+  color: #dfffee;
+}
+
+.lpv-actions a:first-child {
+  background: #34d399;
+  color: #03110b;
+  box-shadow: 0 16px 46px rgba(52, 211, 153, 0.24);
+}
+
+.pest-proof-strip {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 10px;
+  margin: 8px auto 34px;
+  color: #7ea696;
+}
+
+.pest-proof-strip span,
+.pest-proof-strip strong {
+  display: inline-flex;
+  align-items: center;
+  min-height: 34px;
+  padding: 7px 12px;
+  border: 1px solid rgba(110, 231, 183, 0.13);
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.035);
+  font-size: 0.82rem;
+}
+
+.pest-proof-strip strong {
+  color: #e8fff3;
+}
+
+.lpv-panel,
+.lpv-terminal,
+.incident-card,
+.manual-board a,
+.sample-stack article,
+.lpv-strip article,
+.lpv-callout,
+.audit-steps article,
+.coverage-compare div,
+.developer-flow article,
+.developer-commands article,
+.manual-chapters article,
+.manual-reference,
+.lab-matrix,
+.lab-showcase,
+.folder-card,
+.ci-log,
+.ci-policies article {
+  border-color: rgba(110, 231, 183, 0.13);
+  background: rgba(3, 17, 11, 0.76);
+  box-shadow: 0 22px 70px rgba(0, 0, 0, 0.24);
+}
+
+.lpv-panel-head,
+.ledger-line,
+.ledger-panel p,
+.manual-reference li,
+.matrix-row,
+.folder-card span {
+  border-color: rgba(110, 231, 183, 0.12);
+}
+
+.lpv-panel-head,
+.matrix-row.head,
+.score-row.head {
+  background: rgba(52, 211, 153, 0.07);
+  color: #d8ffea;
+}
+
+.lpv-terminal pre,
+.code-card pre,
+.config-card pre,
+.ci-log pre {
+  background: #020604;
+  color: #dfffee;
+}
+
+.ledger-line.risk,
+.coverage-compare .selected,
+.incident-card {
+  background:
+    linear-gradient(135deg, rgba(52, 211, 153, 0.13), rgba(16, 185, 129, 0.05)),
+    rgba(3, 17, 11, 0.88);
+}
+
+.ledger-line code,
+.folder-card code,
+.developer-commands code,
+.incident-card code {
+  color: #dfffee;
+}
+
+.coverage-compare strong {
+  color: #f2fff8;
+}
+
+.status-pill,
+.ok,
+.warn {
+  background: rgba(52, 211, 153, 0.12);
+  color: #9ff5c8;
+}
+
+.manual-chapters a,
+.sample-link {
+  color: #9ff5c8;
+}
+
+@media (max-width: 980px) {
+  .lpv {
+    width: min(100% - 18px, 760px);
+    padding: 28px 18px 48px;
+    border-radius: 28px;
+  }
+
+  .lpv h1 {
+    font-size: clamp(3rem, 16vw, 5.4rem);
+  }
+}

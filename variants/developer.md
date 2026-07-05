@@ -6,6 +6,7 @@ title: Developer Landing
 <main class="lpv lpv-dev">
   <section class="lpv-hero split-console">
     <div>
+      <p class="pest-note">Drop-in CLI for coverage ownership checks</p>
       <p class="lpv-kicker">Variation 02 / Developer</p>
       <h1>Add a file-owned coverage gate in one config file.</h1>
       <p class="lpv-lede">Install Parity, point it at your existing coverage artifact, and ask the only local question that matters: did the belonging test meaningfully cover this file?</p>
@@ -18,6 +19,15 @@ title: Developer Landing
       <div class="lpv-panel-head"><span>terminal</span><code>quickstart</code></div>
       <pre><code>composer require --dev testparity/parity&#10;php vendor/bin/parity init&#10;&#10;XDEBUG_MODE=coverage ./vendor/bin/pest \&#10;  --coverage-phpunit=coverage.xml&#10;&#10;php vendor/bin/parity check --format=json</code></pre>
     </div>
+  </section>
+
+  <section class="pest-proof-strip" aria-label="Developer workflow">
+    <span>Runs with your stack</span>
+    <strong>Pest</strong>
+    <strong>PHPUnit</strong>
+    <strong>Jest</strong>
+    <strong>Mocha</strong>
+    <strong>Vitest</strong>
   </section>
 
   <section class="lpv-codegrid">

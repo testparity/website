@@ -6,6 +6,7 @@ title: Ledger Landing
 <main class="lpv lpv-ledger">
   <section class="lpv-hero two-col">
     <div>
+      <p class="pest-note">New: matched coverage for the test that owns the file</p>
       <p class="lpv-kicker">Variation 01 / Ledger</p>
       <h1>Coverage, reconciled file by file.</h1>
       <p class="lpv-lede">Parity turns every source file and its belonging test into a reviewable ledger. Global coverage can pass while ownership is weak; matched coverage shows whether the right test covered the right file.</p>
@@ -22,6 +23,14 @@ title: Ledger Landing
       <div class="ledger-line risk"><code>CheckoutGateway.php</code><code>CheckoutGatewayTest.php</code><strong>18%</strong></div>
       <p>Fails because the file’s own test only covers 18%, even though project coverage is 88%.</p>
     </div>
+  </section>
+
+  <section class="pest-proof-strip" aria-label="Supported coverage workflow">
+    <span>Works after your tests run</span>
+    <strong>PHPUnit XML</strong>
+    <strong>Clover XML</strong>
+    <strong>Cobertura XML</strong>
+    <strong>JSON output</strong>
   </section>
 
   <section class="lpv-strip">

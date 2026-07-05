@@ -5,9 +5,18 @@ title: Manual Landing
 
 <main class="lpv lpv-manual">
   <section class="lpv-hero manual-hero">
+    <p class="pest-note">Documentation-first release gate</p>
     <p class="lpv-kicker">Variation 03 / Manual</p>
     <h1>The operating manual for test parity.</h1>
     <p class="lpv-lede">A documentation-first release gate for teams that need every application file to have an obvious test, ownership declaration, and matched coverage threshold.</p>
+  </section>
+
+  <section class="pest-proof-strip" aria-label="Documentation map">
+    <span>Read in order</span>
+    <strong>Install</strong>
+    <strong>Configure</strong>
+    <strong>Measure</strong>
+    <strong>Enforce</strong>
   </section>
 
   <section class="manual-board">
