@@ -13,6 +13,9 @@ hero:
       text: Read the rules
       link: /guide/rules
     - theme: alt
+      text: Browse samples
+      link: https://github.com/testparity/samples
+    - theme: alt
       text: View specs
       link: /specs/
 ---
@@ -28,6 +31,7 @@ hero:
     </p>
     <div class="stage-metrics">
       <span><strong>0</strong> test execution</span>
+      <span><strong>11</strong> sample projects</span>
       <span><strong>3</strong> coverage formats</span>
       <span><strong>5</strong> built-in rules</span>
     </div>
@@ -44,6 +48,19 @@ hero:
       <div class="cube-face cube-top">CI</div>
       <div class="cube-face cube-bottom">JSON</div>
     </div>
+  </div>
+</section>
+
+<section class="install-ribbon" aria-label="Install Parity">
+  <div>
+    <p class="eyebrow">Install and gate CI</p>
+    <h2>One binary. One config. A structural receipt for every release.</h2>
+  </div>
+  <div class="install-commands">
+    <pre><code>composer require --dev testparity/parity
+php vendor/bin/parity init
+php vendor/bin/parity check --format=json</code></pre>
+    <a href="/guide/installation">Installation guide</a>
   </div>
 </section>
 
@@ -105,6 +122,29 @@ hero:
   </div>
 </section>
 
+<section class="sample-lab" aria-label="Published samples">
+  <div class="sample-lab-copy">
+    <p class="eyebrow">Published sample lab</p>
+    <h2>Parity is tested against real project shapes, not a single happy-path fixture.</h2>
+    <p>
+      The samples repository ships runnable PHP, Pest, PHPUnit, Jest, Mocha, Vitest, Cargo, Laravel,
+      Vite, AdonisJS, and Rust layouts. Each sample includes the native test app, coverage artifact,
+      Parity config, and expected result.
+    </p>
+    <a class="sample-link" href="https://github.com/testparity/samples">Open testparity/samples</a>
+  </div>
+  <div class="sample-grid">
+    <article><span>PHP</span><strong>phpunit</strong><small>Clover XML</small></article>
+    <article><span>PHP</span><strong>pest</strong><small>covers() links</small></article>
+    <article><span>JS</span><strong>jest</strong><small>Clover XML</small></article>
+    <article><span>JS</span><strong>mocha</strong><small>NYC coverage</small></article>
+    <article><span>TS</span><strong>vitest</strong><small>Vite layout</small></article>
+    <article><span>Rust</span><strong>cargo</strong><small>Cobertura XML</small></article>
+    <article><span>PHP</span><strong>laravel</strong><small>app/Services</small></article>
+    <article><span>TS</span><strong>adonisjs</strong><small>service tests</small></article>
+  </div>
+</section>
+
 <section class="workflow-lane" aria-label="Parity workflow">
   <div>
     <p class="eyebrow">Release workflow</p>
@@ -115,6 +155,24 @@ hero:
     <li><strong>Measure</strong><span>Emit PHPUnit XML, Clover XML, or Cobertura XML from your native test tool.</span></li>
     <li><strong>Enforce</strong><span>Fail CI when tests disappear, ownership declarations drift, or coverage drops.</span></li>
   </ol>
+</section>
+
+<section class="proof-board" aria-label="Release proof">
+  <article>
+    <span class="proof-status">CI green</span>
+    <h3>Parity checks itself</h3>
+    <p>The CLI repository runs Pest, Pint, PHAR verification, and <code>php parity check --format=json</code> on every deploy.</p>
+  </article>
+  <article>
+    <span class="proof-status">Samples green</span>
+    <h3>Every sample runs Parity</h3>
+    <p>The samples repository validates all 11 fixtures through a bundled PHAR so examples cannot silently rot.</p>
+  </article>
+  <article>
+    <span class="proof-status">Vercel live</span>
+    <h3>Docs ship automatically</h3>
+    <p>The website deploys from GitHub Actions to Vercel and serves <code>testparity.com</code> with production HTTPS.</p>
+  </article>
 </section>
 
 <section class="capability-wall" aria-label="Parity capabilities">

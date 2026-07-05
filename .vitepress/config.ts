@@ -48,6 +48,7 @@ export default defineConfig({
     nav: [
       { text: 'Guide', link: '/guide/getting-started' },
       { text: 'Specs', link: '/specs/' },
+      { text: 'Samples', link: 'https://github.com/testparity/samples' },
       { text: 'GitHub', link: 'https://github.com/testparity/cli' },
     ],
 
