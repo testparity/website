@@ -7,6 +7,18 @@ title: Landing Page Variations
 
 Five reviewable homepage directions for Parity. Each keeps the product message centered on matched coverage: how much a single test covers the file it belongs to.
 
+<section class="variant-recommendation">
+  <div>
+    <span>Recommended base</span>
+    <h2>Use Ledger as the homepage spine, then borrow Developer for the quickstart section.</h2>
+  </div>
+  <p>
+    The strongest public positioning is “coverage reconciled file by file.” It explains the category quickly,
+    demonstrates the matched-coverage concept visually, and still leaves room for a command-first section below
+    the fold.
+  </p>
+</section>
+
 <div class="variant-index">
   <a href="/variants/ledger">
     <span>01</span>
@@ -34,3 +46,42 @@ Five reviewable homepage directions for Parity. Each keeps the product message c
     <em>Release-gate narrative focused on the exact failure a reviewer needs to fix.</em>
   </a>
 </div>
+
+<section class="variant-scorecard" aria-label="Variation scorecard">
+  <div class="score-row head">
+    <span>Variation</span>
+    <span>Best for</span>
+    <span>Risk</span>
+    <span>Homepage fit</span>
+  </div>
+  <div class="score-row">
+    <strong>Ledger</strong>
+    <span>Explaining matched coverage in one glance.</span>
+    <span>Needs a quickstart section to convert developers.</span>
+    <b>Highest</b>
+  </div>
+  <div class="score-row">
+    <strong>Developer</strong>
+    <span>Engineers evaluating install friction.</span>
+    <span>Less emotionally distinctive as a brand page.</span>
+    <b>High</b>
+  </div>
+  <div class="score-row">
+    <strong>Manual</strong>
+    <span>Documentation-led onboarding and DevOps handoff.</span>
+    <span>Feels more like docs IA than a homepage.</span>
+    <b>Medium</b>
+  </div>
+  <div class="score-row">
+    <strong>Sample Lab</strong>
+    <span>Showing breadth across stacks and test tools.</span>
+    <span>Better as a secondary proof section.</span>
+    <b>Medium</b>
+  </div>
+  <div class="score-row">
+    <strong>CI Room</strong>
+    <span>Release managers and teams with merge gates.</span>
+    <span>Narrower than the full product story.</span>
+    <b>Medium</b>
+  </div>
+</section>
