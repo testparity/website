@@ -12,7 +12,7 @@ export default defineConfig({
   srcExclude: ['README.md', 'CLAUDE.md', '.claude/**'],
 
   head: [
-    ['link', { rel: 'icon', href: '/favicon.ico' }],
+    ['link', { rel: 'icon', type: 'image/png', href: '/brand/testparity-mark.png' }],
   ],
 
   vite: {
@@ -45,6 +45,13 @@ export default defineConfig({
   },
 
   themeConfig: {
+    logo: {
+      light: '/brand/testparity-logo-light.png',
+      dark: '/brand/testparity-logo-dark.png',
+      alt: 'TestParity',
+    },
+    siteTitle: false,
+
     nav: [
       { text: 'Guide', link: '/guide/getting-started' },
       { text: 'Specs', link: '/specs/' },
