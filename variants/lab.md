@@ -9,19 +9,19 @@ title: Sample Lab Landing
       <p class="pest-note">Runnable examples, not screenshots</p>
       <p class="lpv-kicker">Variation 04 / Sample Lab</p>
       <h1>Copy a working sample before you write your own config.</h1>
-      <p class="lpv-lede">Parity ships with runnable examples across PHP, JavaScript, TypeScript, Rust, Laravel, Vite, and AdonisJS-style layouts. Each sample includes code, tests, coverage output, config, and expected result.</p>
+      <p class="lpv-lede">Parity ships with runnable public examples across PHP, JavaScript, TypeScript, Rust, Laravel, Vite, and AdonisJS-style layouts. Each sample installs Parity from Packagist in CI and includes code, tests, coverage output, config, and expected result.</p>
       <div class="lpv-actions">
-        <a href="https://github.com/testparity/samples">Browse sample repository</a>
+        <a href="/guide/samples">Browse sample repositories</a>
         <a href="/guide/configuration">Configuration reference</a>
       </div>
     </div>
     <div class="sample-stack">
       <article><span>PHP</span><strong>phpunit</strong><em>attributed XML</em></article>
       <article><span>PHP</span><strong>pest</strong><em>covers() ownership</em></article>
-      <article><span>JS</span><strong>jest</strong><em>Clover report</em></article>
-      <article><span>JS</span><strong>mocha</strong><em>NYC output</em></article>
+      <article><span>JS</span><strong>jest</strong><em>Parity JSON</em></article>
+      <article><span>JS</span><strong>mocha</strong><em>NYC + attribution</em></article>
       <article><span>TS</span><strong>vitest</strong><em>Vite project</em></article>
-      <article><span>Rust</span><strong>cargo</strong><em>Cobertura XML</em></article>
+      <article><span>Rust</span><strong>cargo</strong><em>portable coverage</em></article>
     </div>
   </section>
 
@@ -44,10 +44,10 @@ title: Sample Lab Landing
     <div class="matrix-row head"><span>Sample</span><span>Runner</span><span>Coverage</span><span>What it proves</span></div>
     <div class="matrix-row"><strong>phpunit</strong><span>PHPUnit</span><span>PHPUnit XML</span><span>Attributed per-test coverage.</span></div>
     <div class="matrix-row"><strong>pest</strong><span>Pest</span><span>PHPUnit XML</span><span><code>covers()</code> ownership links.</span></div>
-    <div class="matrix-row"><strong>jest</strong><span>Jest</span><span>Clover</span><span>JavaScript project structure.</span></div>
-    <div class="matrix-row"><strong>mocha</strong><span>Mocha + NYC</span><span>Clover</span><span>Node coverage artifact compatibility.</span></div>
-    <div class="matrix-row"><strong>vitest</strong><span>Vitest</span><span>Clover</span><span>TypeScript/Vite layout mapping.</span></div>
-    <div class="matrix-row"><strong>cargo</strong><span>Rust</span><span>Cobertura</span><span>Portable non-PHP coverage reports.</span></div>
+    <div class="matrix-row"><strong>jest</strong><span>Jest</span><span>Parity JSON</span><span>JavaScript structure plus matched coverage proof.</span></div>
+    <div class="matrix-row"><strong>mocha</strong><span>Mocha + NYC</span><span>Parity JSON</span><span>Node coverage attribution compatibility.</span></div>
+    <div class="matrix-row"><strong>vitest</strong><span>Vitest</span><span>Parity JSON</span><span>TypeScript/Vite layout mapping.</span></div>
+    <div class="matrix-row"><strong>cargo</strong><span>Rust</span><span>Parity JSON</span><span>Portable non-PHP attribution example.</span></div>
   </section>
 
   <section class="lab-showcase">
@@ -57,11 +57,11 @@ title: Sample Lab Landing
       <p>A sample is not a screenshot or fixture blob. It is a small application with tests, generated coverage, Parity config, and a checked-in result so regressions are obvious.</p>
     </div>
     <div class="folder-card">
-      <code>samples/jest/</code>
+      <code>testparity/jest-sample</code>
       <span>code/</span>
-      <span>coverage/clover.xml</span>
+      <span>parity-coverage.json</span>
       <span>parity.yaml</span>
-      <span>result.md</span>
+      <span>.github/workflows/parity.yml</span>
     </div>
   </section>
 

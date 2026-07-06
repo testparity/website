@@ -14,7 +14,7 @@ hero:
       link: /guide/configuration
     - theme: alt
       text: Browse samples
-      link: https://github.com/testparity/samples
+      link: /guide/samples
 ---
 
 <section class="stripe-shell" aria-label="Parity overview">
@@ -84,7 +84,7 @@ hero:
     <div class="doc-card">
       <span>03</span>
       <strong>Feed coverage reports</strong>
-      <em>Use PHPUnit XML for attribution, or Clover and Cobertura for portable project checks.</em>
+      <em>Use Parity JSON or PHPUnit XML for attribution, with Clover and Cobertura as portable fallbacks.</em>
     </div>
     <div class="doc-card">
       <span>04</span>
@@ -135,7 +135,7 @@ hero:
       <article>
         <span>03</span>
         <h3>Matched coverage is visible</h3>
-        <p>PHPUnit XML attribution separates coverage from the matching test and coverage from everything else.</p>
+        <p>Parity JSON and PHPUnit XML attribution separate coverage from the matching test and coverage from everything else.</p>
       </article>
       <article>
         <span>04</span>
@@ -151,18 +151,18 @@ hero:
     <p class="eyebrow">Working examples</p>
     <h2>Study real sample apps before wiring Parity into your own repo.</h2>
     <p>
-      The samples repository includes runnable PHP, Pest, PHPUnit, Jest, Mocha, Vitest, Cargo, Laravel,
-      Vite, AdonisJS, and Rust layouts. Each sample includes coverage output and a <code>parity.yaml</code> you can copy from.
+      The public sample repositories cover PHP, Pest, PHPUnit, Jest, Mocha, Vitest, Cargo, Laravel,
+      TypeScript, AdonisJS, and Rust layouts. Each sample installs Parity from Packagist in CI and includes coverage output plus a <code>parity.yaml</code> you can copy from.
     </p>
-    <a class="sample-link" href="https://github.com/testparity/samples">Open testparity/samples</a>
+    <a class="sample-link" href="/guide/samples">Browse sample repositories</a>
   </div>
   <div class="sample-grid">
     <article><span>PHP</span><strong>phpunit</strong><small>attributed coverage</small></article>
     <article><span>PHP</span><strong>pest</strong><small>covers() links</small></article>
-    <article><span>JS</span><strong>jest</strong><small>Clover XML</small></article>
-    <article><span>JS</span><strong>mocha</strong><small>NYC coverage</small></article>
+    <article><span>JS</span><strong>jest</strong><small>Parity JSON</small></article>
+    <article><span>JS</span><strong>mocha</strong><small>NYC + attribution</small></article>
     <article><span>TS</span><strong>vitest</strong><small>Vite layout</small></article>
-    <article><span>Rust</span><strong>cargo</strong><small>Cobertura XML</small></article>
+    <article><span>Rust</span><strong>cargo</strong><small>portable coverage</small></article>
   </div>
 </section>
 
@@ -175,7 +175,7 @@ hero:
   <article>
     <span class="proof-status">Samples CI</span>
     <h3>Examples cannot silently rot</h3>
-    <p>The samples repository runs every sample through a bundled Parity PHAR.</p>
+    <p>Each sample repository installs <code>testparity/parity</code> from Packagist and runs <code>parity check</code>.</p>
   </article>
   <article>
     <span class="proof-status">Docs</span>

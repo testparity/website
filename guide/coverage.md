@@ -26,14 +26,25 @@ Use formats with per-line and per-test attribution whenever available. `parity-c
 }
 ```
 
-## Portable Format
+## Multiple Coverage Files
 
-Clover XML and Cobertura XML work across many ecosystems and support per-file coverage thresholds. They do not include enough detail to prove which test covered which line.
+`coverage_xml` can be a single path or an ordered list. Parity uses the first existing path, which lets a project prefer detailed attribution locally and fall back to portable coverage in CI.
 
 ```yaml
 coverage_xml: [parity-coverage.json, coverage-xml, clover.xml, cobertura.xml]
 ```
 
-Parity uses the first configured coverage path that exists.
+Recommended order:
+
+| Format | Use when | Supports matched coverage |
+| --- | --- | --- |
+| Parity JSON | A converter or runner plugin can provide test names per line | Yes |
+| PHPUnit XML directory | PHPUnit or Pest can generate `--coverage-xml` | Yes |
+| Clover XML | PHP, Jest, Mocha/NYC, Vitest, or other tools emit Clover | No |
+| Cobertura XML | Rust, Python, Go, JVM, JS/TS, or CI tools emit Cobertura | No |
+
+## Portable Format
+
+Clover XML and Cobertura XML work across many ecosystems and support per-file coverage thresholds. They do not include enough detail to prove which test covered which line.
 
 See [Parity Coverage JSON](/guide/parity-coverage-json) for the full language-neutral attribution schema and converter example.

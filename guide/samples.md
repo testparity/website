@@ -1,20 +1,20 @@
 # Samples
 
-Each public sample demonstrates the same Parity proof in a different ecosystem:
+Each public sample demonstrates the same Parity proof in a different ecosystem. The samples are split into individual repositories so each one can install the public Packagist package during CI and prove the release path without private tokens.
 
-| Sample | Focus | Repository |
-| --- | --- | --- |
-| PHP | Plain PHP source and tests | [php-sample](https://github.com/testparity/php-sample) |
-| Laravel | Laravel-style service tests | [laravel-sample](https://github.com/testparity/laravel-sample) |
-| TypeScript | Vite-style TypeScript utility | [typescript-sample](https://github.com/testparity/typescript-sample) |
-| AdonisJS | AdonisJS-style TypeScript service | [adonisjs-sample](https://github.com/testparity/adonisjs-sample) |
-| Rust | Plain Rust source and tests | [rust-sample](https://github.com/testparity/rust-sample) |
-| Cargo | Runnable Cargo project | [cargo-sample](https://github.com/testparity/cargo-sample) |
-| PHPUnit | Runnable PHPUnit project | [phpunit-sample](https://github.com/testparity/phpunit-sample) |
-| Pest | Runnable Pest project | [pest-sample](https://github.com/testparity/pest-sample) |
-| Jest | Runnable Jest project | [jest-sample](https://github.com/testparity/jest-sample) |
-| Mocha | Runnable Mocha project | [mocha-sample](https://github.com/testparity/mocha-sample) |
-| Vitest | Runnable Vitest project | [vitest-sample](https://github.com/testparity/vitest-sample) |
+| Sample | Language/framework | Test runner | Coverage input | Repository |
+| --- | --- | --- | --- | --- |
+| PHP | Plain PHP | Fixture coverage | Parity JSON | [php-sample](https://github.com/testparity/php-sample) |
+| Laravel | Laravel-style PHP | Fixture coverage | Parity JSON | [laravel-sample](https://github.com/testparity/laravel-sample) |
+| TypeScript | TypeScript utility | Fixture coverage | Parity JSON | [typescript-sample](https://github.com/testparity/typescript-sample) |
+| AdonisJS | AdonisJS-style TypeScript | Fixture coverage | Parity JSON | [adonisjs-sample](https://github.com/testparity/adonisjs-sample) |
+| Rust | Plain Rust | Fixture coverage | Parity JSON | [rust-sample](https://github.com/testparity/rust-sample) |
+| Cargo | Cargo project | Cargo | Parity JSON | [cargo-sample](https://github.com/testparity/cargo-sample) |
+| PHPUnit | PHP | PHPUnit | Parity JSON | [phpunit-sample](https://github.com/testparity/phpunit-sample) |
+| Pest | PHP | Pest | Parity JSON | [pest-sample](https://github.com/testparity/pest-sample) |
+| Jest | JavaScript | Jest | Parity JSON | [jest-sample](https://github.com/testparity/jest-sample) |
+| Mocha | JavaScript | Mocha + NYC | Parity JSON | [mocha-sample](https://github.com/testparity/mocha-sample) |
+| Vitest | TypeScript | Vitest | Parity JSON | [vitest-sample](https://github.com/testparity/vitest-sample) |
 
 ## The Proof
 
@@ -53,3 +53,14 @@ The samples use `parity-coverage.json`, a language-neutral attribution file:
   ]
 }
 ```
+
+## CI Contract
+
+Each sample runs the public package:
+
+```bash
+composer global require testparity/parity --prefer-dist --no-progress --no-interaction
+parity check --format=json
+```
+
+That makes the samples useful as release proof, not just documentation examples.

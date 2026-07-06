@@ -59,7 +59,7 @@ title: Manual Landing
     </div>
     <ul>
       <li><strong>Entry point</strong><span><code>php vendor/bin/parity check --format=json</code></span></li>
-      <li><strong>Required artifact</strong><span>PHPUnit XML, Clover XML, or Cobertura XML coverage report.</span></li>
+      <li><strong>Required artifact</strong><span>Parity JSON, PHPUnit XML, Clover XML, or Cobertura XML coverage report.</span></li>
       <li><strong>Config file</strong><span><code>parity.yaml</code> committed at the repository root.</span></li>
       <li><strong>Failure behavior</strong><span>Non-zero exit when required rules fail.</span></li>
     </ul>

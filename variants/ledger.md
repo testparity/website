@@ -28,6 +28,7 @@ title: Ledger Landing
   <section class="pest-proof-strip" aria-label="Supported coverage workflow">
     <span>Works after your tests run</span>
     <strong>PHPUnit XML</strong>
+    <strong>Parity JSON</strong>
     <strong>Clover XML</strong>
     <strong>Cobertura XML</strong>
     <strong>JSON output</strong>
@@ -35,7 +36,7 @@ title: Ledger Landing
 
   <section class="lpv-strip">
     <article><span>01</span><strong>Map</strong><p>Declare source and test folders in <code>parity.yaml</code>.</p></article>
-    <article><span>02</span><strong>Attribute</strong><p>Read coverage from PHPUnit XML, Clover, or Cobertura.</p></article>
+    <article><span>02</span><strong>Attribute</strong><p>Read coverage from Parity JSON, PHPUnit XML, Clover, or Cobertura.</p></article>
     <article><span>03</span><strong>Enforce</strong><p>Fail CI on missing tests, weak ownership, or low matched coverage.</p></article>
   </section>
 

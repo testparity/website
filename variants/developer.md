@@ -12,12 +12,12 @@ title: Developer Landing
       <p class="lpv-lede">Install Parity, point it at your existing coverage artifact, and ask the only local question that matters: did the belonging test meaningfully cover this file?</p>
       <div class="lpv-actions">
         <a href="/guide/installation">Install Parity</a>
-        <a href="https://github.com/testparity/samples">Open samples</a>
+        <a href="/guide/samples">Open samples</a>
       </div>
     </div>
     <div class="lpv-terminal">
       <div class="lpv-panel-head"><span>terminal</span><code>quickstart</code></div>
-      <pre><code>composer require --dev testparity/parity&#10;php vendor/bin/parity init&#10;&#10;XDEBUG_MODE=coverage ./vendor/bin/pest \&#10;  --coverage-phpunit=coverage.xml&#10;&#10;php vendor/bin/parity check --format=json</code></pre>
+      <pre><code>composer require --dev testparity/parity&#10;php vendor/bin/parity init&#10;&#10;XDEBUG_MODE=coverage ./vendor/bin/pest \&#10;  --coverage-xml=coverage-xml \&#10;  --coverage-clover=clover.xml&#10;&#10;php vendor/bin/parity check --format=json</code></pre>
     </div>
   </section>
 
@@ -37,7 +37,7 @@ title: Developer Landing
     </div>
     <div class="lpv-panel">
       <h2>Designed not to replace your runner.</h2>
-      <p>Parity runs after Pest, PHPUnit, Jest, Mocha, Vitest, or Cargo has produced coverage. It reads the artifact and checks structure, ownership, and matched coverage.</p>
+      <p>Parity runs after Pest, PHPUnit, Jest, Mocha, Vitest, Cargo, or another runner has produced coverage. It reads Parity JSON, PHPUnit XML, Clover XML, or Cobertura XML and checks structure, ownership, and matched coverage when attribution is available.</p>
       <ul>
         <li>Deterministic exit codes for CI</li>
         <li>JSON for automation</li>
@@ -50,7 +50,7 @@ title: Developer Landing
     <article>
       <span>1</span>
       <strong>Keep your test runner</strong>
-      <p>Use Pest, PHPUnit, Jest, Mocha, Vitest, or Cargo exactly as before. Parity only needs the coverage file they already produce.</p>
+      <p>Use Pest, PHPUnit, Jest, Mocha, Vitest, Cargo, or your existing runner exactly as before. Parity only needs a supported coverage file or an attribution converter.</p>
     </article>
     <article>
       <span>2</span>
