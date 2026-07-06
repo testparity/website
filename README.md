@@ -1,3 +1,7 @@
+<p align="center">
+  <img src="https://testparity.com/brand/testparity-readme-banner.jpg" alt="TestParity" width="100%">
+</p>
+
 # Parity Website
 
 VitePress documentation site for Parity, the structural test parity and coverage validation CLI.
