@@ -59,7 +59,7 @@ export default defineConfig({
           { text: '05 CI Room', link: '/variants/ci' },
         ],
       },
-      { text: 'Samples', link: 'https://github.com/testparity/samples' },
+      { text: 'Samples', link: '/guide/samples' },
       { text: 'GitHub', link: 'https://github.com/testparity/cli' },
     ],
 
@@ -78,6 +78,8 @@ export default defineConfig({
             { text: 'Configuration', link: '/guide/configuration' },
             { text: 'Rules', link: '/guide/rules' },
             { text: 'Coverage', link: '/guide/coverage' },
+            { text: 'Why Global Coverage Lies', link: '/guide/why-global-coverage-lies' },
+            { text: 'Samples', link: '/guide/samples' },
           ],
         },
         {
