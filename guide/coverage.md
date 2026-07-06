@@ -35,3 +35,5 @@ coverage_xml: [parity-coverage.json, coverage-xml, clover.xml, cobertura.xml]
 ```
 
 Parity uses the first configured coverage path that exists.
+
+See [Parity Coverage JSON](/guide/parity-coverage-json) for the full language-neutral attribution schema and converter example.

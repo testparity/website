@@ -78,6 +78,7 @@ export default defineConfig({
             { text: 'Configuration', link: '/guide/configuration' },
             { text: 'Rules', link: '/guide/rules' },
             { text: 'Coverage', link: '/guide/coverage' },
+            { text: 'Parity Coverage JSON', link: '/guide/parity-coverage-json' },
             { text: 'Why Global Coverage Lies', link: '/guide/why-global-coverage-lies' },
             { text: 'Samples', link: '/guide/samples' },
           ],
