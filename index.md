@@ -17,8 +17,8 @@ hero:
       link: /guide/samples
 ---
 
-<section class="stripe-shell" aria-label="Parity overview">
-  <div class="stripe-copy">
+<section class="parity-intro" aria-label="Parity overview">
+  <div class="parity-intro-copy">
     <p class="eyebrow">Per-file test accountability</p>
     <h2>Global coverage tells you the room is lit. Parity tells you which switch belongs to which file.</h2>
     <p>
@@ -26,6 +26,20 @@ hero:
       and reports how much of that file was covered by the test that should own it. The useful number is not
       just coverage. It is matched coverage.
     </p>
+    <div class="intro-metrics">
+      <div>
+        <strong>One file, one owner</strong>
+        <span>Every production path resolves to the test that should carry its behavior.</span>
+      </div>
+      <div>
+        <strong>Coverage with attribution</strong>
+        <span>Matched coverage separates real ownership from incidental execution.</span>
+      </div>
+      <div>
+        <strong>Release gating without guesswork</strong>
+        <span>CI output names the file, the expected test, the rule, and the missing proof.</span>
+      </div>
+    </div>
     <div class="doc-actions">
       <a href="/guide/getting-started">Start with parity.yaml</a>
       <a href="/guide/coverage">Understand matched coverage</a>
@@ -65,36 +79,50 @@ hero:
   </div>
 </section>
 
-<section class="docs-first" aria-label="Documentation paths">
-  <div>
+<section class="adoption-path" aria-label="Documentation path">
+  <div class="adoption-copy">
     <p class="eyebrow">Documentation path</p>
     <h2>Get from zero to a useful CI gate without learning a new test runner.</h2>
+    <p>
+      Parity fits around the runner and coverage file you already trust. The workflow is deliberately plain:
+      install the CLI, describe ownership, feed coverage, and fail loudly when a file is not meaningfully tested
+      by the test that belongs to it.
+    </p>
+    <a class="sample-link" href="/guide/getting-started">Open the guided setup</a>
   </div>
-  <div class="docs-grid">
-    <div class="doc-card">
+  <div class="path-rail">
+    <article>
       <span>01</span>
-      <strong>Install the CLI</strong>
-      <em>Composer, PHAR, and local binary workflows.</em>
-    </div>
-    <div class="doc-card">
+      <div>
+        <strong>Install the CLI</strong>
+        <p>Composer, PHAR, and local binary workflows are all documented and CI-friendly.</p>
+      </div>
+    </article>
+    <article>
       <span>02</span>
-      <strong>Map files to tests</strong>
-      <em>Declare source/test folders, suffixes, file maps, and minimum matched coverage.</em>
-    </div>
-    <div class="doc-card">
+      <div>
+        <strong>Map files to tests</strong>
+        <p>Declare source/test folders, suffixes, file maps, and minimum matched coverage.</p>
+      </div>
+    </article>
+    <article>
       <span>03</span>
-      <strong>Feed coverage reports</strong>
-      <em>Use Parity JSON or PHPUnit XML for attribution, with Clover and Cobertura as portable fallbacks.</em>
-    </div>
-    <div class="doc-card">
+      <div>
+        <strong>Feed coverage reports</strong>
+        <p>Use Parity JSON or PHPUnit XML attribution, with Clover and Cobertura as portable fallbacks.</p>
+      </div>
+    </article>
+    <article>
       <span>04</span>
-      <strong>Fail releases clearly</strong>
-      <em>Emit JSON for CI and table output for humans reviewing failures.</em>
-    </div>
+      <div>
+        <strong>Fail releases clearly</strong>
+        <p>Emit JSON for CI and table output for humans reviewing what failed and why.</p>
+      </div>
+    </article>
   </div>
 </section>
 
-<section class="code-path" aria-label="Ease of use">
+<section class="implementation-stage" aria-label="Parity workflow">
   <div class="code-card">
     <div class="terminal-bar">
       <span></span><span></span><span></span>
@@ -102,10 +130,20 @@ hero:
     </div>
     <pre><code>composer require --dev testparity/parity&#10;php vendor/bin/parity init&#10;&#10;# Generate coverage with your existing test command.&#10;XDEBUG_MODE=coverage ./vendor/bin/pest --coverage-clover=clover.xml&#10;&#10;# Check whether each file has a real owning test.&#10;php vendor/bin/parity check --format=json</code></pre>
   </div>
-  <div class="config-card">
-    <p class="eyebrow">The important setting</p>
-    <h2>Set a minimum for the test that belongs to the file.</h2>
-    <pre><code>min_matched_coverage: 70&#10;&#10;structure:&#10;  - name: Services&#10;    paths:&#10;      source: app/Services&#10;      test: tests/Unit/Services&#10;    rules:&#10;      - test-exists&#10;      - matched-coverage:&#10;          min: 70</code></pre>
+  <div class="implementation-copy">
+    <div class="config-card">
+      <p class="eyebrow">The important setting</p>
+      <h2>Set a minimum for the test that belongs to the file.</h2>
+      <pre><code>min_matched_coverage: 70&#10;&#10;structure:&#10;  - name: Services&#10;    paths:&#10;      source: app/Services&#10;      test: tests/Unit/Services&#10;    rules:&#10;      - test-exists&#10;      - matched-coverage:&#10;          min: 70</code></pre>
+    </div>
+    <div class="implementation-note">
+      <p class="eyebrow">What this changes</p>
+      <h3>Parity makes "which test owns this file?" a first-class release question.</h3>
+      <p>
+        Teams can keep broad suite coverage while still failing a PR when a file's designated test covers only a
+        fraction of the behavior it is supposed to protect.
+      </p>
+    </div>
   </div>
 </section>
 
@@ -121,25 +159,21 @@ hero:
   <div class="showcase-copy">
     <p class="eyebrow">What Parity is optimizing for</p>
     <h2>Coverage that is attributable, reviewable, and local to the file.</h2>
-    <div class="signal-grid">
+    <div class="signal-list">
       <article>
-        <span>01</span>
-        <h3>Belonging test exists</h3>
+        <span>Belonging test exists</span>
         <p>Every source file resolves to the test file that should own its behavior.</p>
       </article>
       <article>
-        <span>02</span>
-        <h3>Ownership is declared</h3>
+        <span>Ownership is declared</span>
         <p>Pest <code>->covers()</code> and PHPUnit <code>#[CoversClass]</code> links can be validated statically.</p>
       </article>
       <article>
-        <span>03</span>
-        <h3>Matched coverage is visible</h3>
+        <span>Matched coverage is visible</span>
         <p>Parity JSON and PHPUnit XML attribution separate coverage from the matching test and coverage from everything else.</p>
       </article>
       <article>
-        <span>04</span>
-        <h3>Review output is concrete</h3>
+        <span>Review output is concrete</span>
         <p>Failures name the source file, expected test file, rule, value, and threshold.</p>
       </article>
     </div>
@@ -154,19 +188,29 @@ hero:
       The public sample repositories cover PHP, Pest, PHPUnit, Jest, Mocha, Vitest, Cargo, Laravel,
       TypeScript, AdonisJS, and Rust layouts. Each sample installs Parity from Packagist in CI and includes coverage output plus a <code>parity.yaml</code> you can copy from.
     </p>
+    <div class="sample-tracks">
+      <span>PHPUnit</span>
+      <span>Pest</span>
+      <span>Jest</span>
+      <span>Mocha</span>
+      <span>Vitest</span>
+      <span>Laravel</span>
+      <span>Rust</span>
+      <span>TypeScript</span>
+    </div>
     <a class="sample-link" href="/guide/samples">Browse sample repositories</a>
   </div>
   <div class="sample-grid">
-    <article><span>PHP</span><strong>phpunit</strong><small>attributed coverage</small></article>
-    <article><span>PHP</span><strong>pest</strong><small>covers() links</small></article>
-    <article><span>JS</span><strong>jest</strong><small>Parity JSON</small></article>
-    <article><span>JS</span><strong>mocha</strong><small>NYC + attribution</small></article>
-    <article><span>TS</span><strong>vitest</strong><small>Vite layout</small></article>
-    <article><span>Rust</span><strong>cargo</strong><small>portable coverage</small></article>
+    <article><span>PHP</span><strong>phpunit</strong><small>Per-file attribution with explicit ownership rules</small></article>
+    <article><span>PHP</span><strong>pest</strong><small><code>->covers()</code> links and matched coverage thresholds</small></article>
+    <article><span>JS</span><strong>jest</strong><small>Parity JSON output wired through CI for file-level proof</small></article>
+    <article><span>JS</span><strong>mocha</strong><small>NYC coverage plus ownership mapping in a classic Node layout</small></article>
+    <article><span>TS</span><strong>vitest</strong><small>TypeScript repo structure with practical coverage artifacts</small></article>
+    <article><span>Rust</span><strong>cargo</strong><small>Portable coverage flow with a sample that still feels realistic</small></article>
   </div>
 </section>
 
-<section class="proof-board" aria-label="Release proof">
+<section class="proof-strip" aria-label="Release proof">
   <article>
     <span class="proof-status">CLI CI</span>
     <h3>Parity checks Parity</h3>
