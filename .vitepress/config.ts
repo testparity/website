@@ -224,6 +224,17 @@ export default defineConfig({
             { text: 'Success Criteria', link: '/specs/010-testing-ci-binary/success-criteria' },
           ],
         },
+        {
+          text: 'S011 Parity Test and Reports',
+          items: [
+            { text: 'Overview', link: '/specs/011-parity-test-per-test-reports/' },
+            { text: 'Functional Requirements', link: '/specs/011-parity-test-per-test-reports/functional-requirements' },
+            { text: 'Interface Requirements', link: '/specs/011-parity-test-per-test-reports/interface-requirements' },
+            { text: 'Acceptance Scenarios', link: '/specs/011-parity-test-per-test-reports/acceptance-scenarios' },
+            { text: 'Edge Cases', link: '/specs/011-parity-test-per-test-reports/edge-cases' },
+            { text: 'Success Criteria', link: '/specs/011-parity-test-per-test-reports/success-criteria' },
+          ],
+        },
       ],
     },
 

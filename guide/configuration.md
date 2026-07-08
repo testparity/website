@@ -12,7 +12,7 @@ settings:
   test_extension: ".php"
   namespace_separator: "\\"
 
-coverage_xml: [parity-coverage.json, coverage-xml, clover.xml, cobertura.xml]
+coverage_xml: [.parity/per-test, parity-coverage.json, coverage-xml, clover.xml, cobertura.xml]
 min_coverage: 80
 min_coverage_global: 80
 

@@ -39,7 +39,7 @@ Use it when Clover or Cobertura can prove aggregate file coverage, but you also 
 ## Configuration
 
 ```yaml
-coverage_xml: [parity-coverage.json, coverage-xml, clover.xml, cobertura.xml]
+coverage_xml: [.parity/per-test, parity-coverage.json, coverage-xml, clover.xml, cobertura.xml]
 
 structure:
   - name: "Utilities"

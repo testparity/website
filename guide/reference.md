@@ -17,7 +17,7 @@ Implementation: `app/Commands/InitCommand.php`
 - `settings.test_suffix`
 - `settings.test_extension`
 - `settings.namespace_separator`
-- `coverage_xml: [coverage-xml, clover.xml, cobertura.xml]`
+- `coverage_xml: [parity-coverage.json, coverage-xml, clover.xml, cobertura.xml]`
 - `min_coverage`
 - one example `structure` block with `paths.source`, `paths.test`, and rules
 
@@ -43,7 +43,7 @@ Options:
 | `--config=path/to/parity.yaml` | `./parity.yaml` discovered from current/project root | Sets the config path and makes relative paths resolve from that config's directory. |
 | `--format=table` | `table` | Renders human-readable structure tables and a summary. |
 | `--format=json` | `table` | Emits a single JSON document with no warnings, headings, ANSI tags, or extra prose. |
-| `--show-tests` | `false` | Reserved for PHPUnit XML attribution display; has no effect for Clover or Cobertura. |
+| `--show-tests` | `false` | Displays individual test names when the selected coverage source includes attribution data. Has no effect for Clover or Cobertura. |
 
 Runtime sequence:
 
@@ -53,7 +53,7 @@ Runtime sequence:
 4. Load project, global, and Composer plugins into the rule registry.
 5. Resolve the first existing coverage candidate.
 6. Read coverage through `PhpUnitXmlCoverageReader` for directories with `index.xml`, otherwise through `CoverageReader`.
-7. Resolve each structure's rules, auto-prepending `test-exists` and auto-adding attribution rules for PHPUnit XML.
+7. Resolve each structure's rules, auto-prepending `test-exists` and auto-adding attribution rules when the selected coverage source exposes per-test line attribution.
 8. Map every source file to its expected test file.
 9. Evaluate rules and render table or JSON output.
 10. Return failure if any enforced rule fails or global coverage is below threshold.
@@ -67,7 +67,7 @@ Top-level keys:
 | Key | Type | Default | Purpose |
 | --- | --- | --- | --- |
 | `settings` | map | `{}` | File naming and namespace/path behavior. |
-| `coverage_xml` | string or list | `[coverage-xml, clover.xml, cobertura.xml]` | Coverage candidates, checked in order. |
+| `coverage_xml` | string or list | `[parity-coverage.json, coverage-xml, clover.xml, cobertura.xml]` | Coverage candidates, checked in order. Prefer attribution-capable sources first. |
 | `min_coverage` | number | `80` | Default per-file minimum for legacy/generated rules. |
 | `min_coverage_global` | number or omitted | `null` | Optional project-level coverage threshold. |
 | `min_matched_coverage` | number or omitted | `null` | Optional default for matching-test-only coverage. |
@@ -145,7 +145,7 @@ Malformed XML, missing files, unreadable files, missing metrics, and empty paths
 
 Implementation: `app/Services/PhpUnitXmlCoverageReader.php`
 
-If a configured coverage candidate is a directory containing `index.xml`, Parity treats it as PHPUnit XML coverage. This is the preferred PHP format because it provides:
+If a configured coverage candidate is a directory containing `index.xml`, Parity treats it as PHPUnit XML coverage. For PHP projects, this remains the most direct native attribution source because it provides:
 
 - per-file line coverage percentages
 - project/global coverage
@@ -247,7 +247,7 @@ Table mode renders:
 3. source/test paths for each structure
 4. a dynamic table based on resolved rules
 5. a final summary table
-6. optional unmatched-test warnings when PHPUnit XML attribution is available
+6. optional unmatched-test warnings when attribution data is available
 
 The first two columns are always `Source` and `Test`; the final column is always `OK`. Rule columns are added from `RuleInterface::columnHeader()`.
 

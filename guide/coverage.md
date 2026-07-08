@@ -31,7 +31,7 @@ Use formats with per-line and per-test attribution whenever available. `parity-c
 `coverage_xml` can be a single path or an ordered list. Parity uses the first existing path, which lets a project prefer detailed attribution locally and fall back to portable coverage in CI.
 
 ```yaml
-coverage_xml: [parity-coverage.json, coverage-xml, clover.xml, cobertura.xml]
+coverage_xml: [.parity/per-test, parity-coverage.json, coverage-xml, clover.xml, cobertura.xml]
 ```
 
 Recommended order:
