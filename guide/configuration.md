@@ -64,4 +64,6 @@ test:
 
 `reports` defaults to `.parity/per-test`, and `timeout` defaults to 300 seconds per isolated runner. `--output` and `--timeout` override those values. `parity test` runs `parity check` after generation unless `--no-check` is supplied.
 
+`test.command` is executed through the system shell. Parity shell-escapes placeholder values, but the command template itself is trusted executable configuration. Review `parity.yaml` before running `parity test`, especially in privileged CI or on pull requests from forks.
+
 Keep temporary artifacts under `.parity/` and separate from `test.reports`. Parity removes each runner artifact after use, stages complete reports, and refuses roots, nested symlinks, overlapping paths, files, or unowned non-empty output directories before it deletes anything.
