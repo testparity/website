@@ -117,8 +117,8 @@ S001-FR-016.b In JSON mode, plugin warnings **MUST NOT** appear in stdout output
 
 S001-FR-017 [P1] The `check` command **MUST** attempt to load coverage data from the candidate paths specified in `settings.coverage_paths` (derived from `coverage_xml` in config).
 S001-FR-017.a The command **MUST** try candidates in order and use the first path that resolves to an existing file or directory.
-S001-FR-017.b A directory candidate is valid if it contains an `index.xml` file (PHPUnit XML coverage format).
-S001-FR-017.c A file candidate is valid if it exists as a regular file (Clover XML format).
+S001-FR-017.b A directory candidate is valid if it contains an `index.json` file (Parity per-test report format) or an `index.xml` file (PHPUnit XML coverage format).
+S001-FR-017.c A file candidate is valid if it exists as a regular file (Parity JSON, Clover XML, or Cobertura XML).
 S001-FR-017.d If no candidate resolves, the command **MUST** print an error listing all tried paths and return exit code 1.
 
 ### Legacy Config Format Support

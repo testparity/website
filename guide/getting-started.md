@@ -32,9 +32,30 @@ vendor/bin/phpunit --coverage-clover clover.xml
 
 ## Run Parity
 
+If your coverage artifact already contains per-test attribution, validate it directly:
+
 ```bash
 parity check
 parity check --format=json
 ```
+
+If your runner only produces aggregate Clover or Cobertura coverage, configure isolated execution in `parity.yaml`:
+
+```yaml
+test:
+  command: "./vendor/bin/pest {test_abs} --coverage-clover={coverage}"
+  coverage: ".parity/tmp/{slug}.xml"
+  reports: ".parity/per-test"
+  timeout: 300
+```
+
+Then generate one report per belonging test and run the check in one command:
+
+```bash
+parity test
+parity test --format=json
+```
+
+Use `parity test --no-check` when another CI step will run `parity check` later. Each isolated runner defaults to a 300-second timeout; pass `--timeout=SECONDS` to override it.
 
 Exit code `0` means all enforced rules passed. Exit code `1` means Parity found a missing input, missing test, invalid coverage link, or threshold failure.

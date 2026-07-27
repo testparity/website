@@ -4,9 +4,9 @@ Parity is distributed as a Composer package and can also be built as a PHAR for 
 
 ## Requirements
 
-- PHP 8.2 or newer
+- PHP 8.4 or newer
 - Composer
-- A coverage report produced by your project's test framework
+- A test runner capable of producing coverage when coverage rules are enabled
 
 ## Composer
 

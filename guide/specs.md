@@ -20,5 +20,6 @@ Start with:
 | [S008](/specs/008-output-formats/) | Output formats |
 | [S009](/specs/009-documentation/) | Documentation system |
 | [S010](/specs/010-testing-ci-binary/) | Testing, CI, and binary distribution |
+| [S011](/specs/011-parity-test-per-test-reports/) | `parity test` and per-test coverage reports |
 
 New tests should reference the related spec IDs near the behavior they cover. This keeps implementation, docs, samples, and release checks traceable.

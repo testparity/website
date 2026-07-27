@@ -20,11 +20,11 @@ The data produced by these readers feeds directly into the rules system (S002). 
 
 S003-US-001 [P1] As a developer running `parity check`, I want per-file coverage percentages read from my Clover XML report so that the `minimum-coverage` rule can evaluate each source file.
 
-S003-US-002 [P1] As a developer using PHPUnit XML coverage, I want per-test attribution data so that `matched-coverage` can distinguish coverage from the matching test vs. incidental coverage from other tests.
+S003-US-002 [P1] As a developer using an attribution-capable coverage format, I want per-test attribution data so that `matched-coverage` can distinguish coverage from the matching test vs. incidental coverage from other tests.
 
 S003-US-003 [P2] As a CI pipeline operator, I want Parity to auto-detect the coverage format from the configured path so that I do not need to specify the format explicitly.
 
-S003-US-004 [P2] As a developer, I want to configure multiple fallback coverage paths so that PHPUnit XML is used when available and Clover XML is used as a fallback.
+S003-US-004 [P2] As a developer, I want to configure multiple fallback coverage paths so that attribution-capable coverage is used when available and aggregate-only coverage is used as a fallback.
 
 S003-US-006 [P1] As a developer in a non-PHP ecosystem, I want to use Cobertura XML so that Parity can enforce per-file coverage for JavaScript, TypeScript, Rust, Python, Go, and other projects that commonly emit Cobertura.
 

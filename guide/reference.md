@@ -1,6 +1,6 @@
 # Implementation Reference
 
-Specs: S001, S002, S003, S004, S005, S006, S007, S008, S010
+Specs: S001, S002, S003, S004, S005, S006, S007, S008, S010, S011
 
 This page maps the public CLI behavior to the implementation surface in `app/`. It is intended as the complete hand-off reference for maintainers, plugin authors, and deployment owners.
 
@@ -17,8 +17,9 @@ Implementation: `app/Commands/InitCommand.php`
 - `settings.test_suffix`
 - `settings.test_extension`
 - `settings.namespace_separator`
-- `coverage_xml: [parity-coverage.json, coverage-xml, clover.xml, cobertura.xml]`
+- `coverage_xml: [.parity/per-test, parity-coverage.json, coverage-xml, clover.xml, cobertura.xml]`
 - `min_coverage`
+- optional `test` block for per-test report generation
 - one example `structure` block with `paths.source`, `paths.test`, and rules
 
 Exit behavior:
@@ -52,7 +53,7 @@ Runtime sequence:
 3. Build `Settings` from top-level config.
 4. Load project, global, and Composer plugins into the rule registry.
 5. Resolve the first existing coverage candidate.
-6. Read coverage through `PhpUnitXmlCoverageReader` for directories with `index.xml`, otherwise through `CoverageReader`.
+6. Read coverage through `ParityPerTestCoverageReader` for directories with `index.json`, `PhpUnitXmlCoverageReader` for directories with `index.xml`, `ParityJsonCoverageReader` for JSON files, and `CoverageReader` for aggregate XML files.
 7. Resolve each structure's rules, auto-prepending `test-exists` and auto-adding attribution rules when the selected coverage source exposes per-test line attribution.
 8. Map every source file to its expected test file.
 9. Evaluate rules and render table or JSON output.
@@ -67,7 +68,7 @@ Top-level keys:
 | Key | Type | Default | Purpose |
 | --- | --- | --- | --- |
 | `settings` | map | `{}` | File naming and namespace/path behavior. |
-| `coverage_xml` | string or list | `[parity-coverage.json, coverage-xml, clover.xml, cobertura.xml]` | Coverage candidates, checked in order. Prefer attribution-capable sources first. |
+| `coverage_xml` | string or list | `[.parity/per-test, parity-coverage.json, coverage-xml, clover.xml, cobertura.xml]` | Coverage candidates, checked in order. Prefer attribution-capable sources first. |
 | `min_coverage` | number | `80` | Default per-file minimum for legacy/generated rules. |
 | `min_coverage_global` | number or omitted | `null` | Optional project-level coverage threshold. |
 | `min_matched_coverage` | number or omitted | `null` | Optional default for matching-test-only coverage. |
@@ -136,22 +137,46 @@ Supported file formats:
 
 | Format | Detection | Per-file coverage | Global coverage | Per-test attribution |
 | --- | --- | --- | --- | --- |
+| Parity per-test directory | Existing configured directory with `index.json` | merged from covered line sets | merged from all source files | Yes |
+| Parity JSON | Existing configured `.json` file | from `coveragePercent` or computed from covered lines | from `globalPercent` | Yes |
 | Clover XML | Any existing configured file with Clover `<file><metrics>` nodes | `coveredstatements / statements * 100` | project `<metrics files="...">` | No |
 | Cobertura XML | Any existing configured file with Cobertura `<class filename line-rate>` nodes | `line-rate * 100`, or line-hit fallback | root `<coverage line-rate>` | No |
 
 Malformed XML, missing files, unreadable files, missing metrics, and empty paths return empty/null results without throwing.
 
-### PHPUnit XML directory reader
+### Attribution-capable readers
 
-Implementation: `app/Services/PhpUnitXmlCoverageReader.php`
+Implementation: `app/Services/ParityPerTestCoverageReader.php`, `app/Services/ParityJsonCoverageReader.php`, `app/Services/PhpUnitXmlCoverageReader.php`
 
-If a configured coverage candidate is a directory containing `index.xml`, Parity treats it as PHPUnit XML coverage. For PHP projects, this remains the most direct native attribution source because it provides:
+If a configured coverage candidate is a directory containing `index.json`, Parity treats it as its native per-test report format. If the candidate is a `.json` file, Parity treats it as `parity-coverage.json`. If the candidate is a directory containing `index.xml`, Parity treats it as PHPUnit XML coverage.
+
+All three attribution-capable formats provide:
 
 - per-file line coverage percentages
 - project/global coverage
 - per-line executable counts
-- test method names that covered each line
+- test names that covered each line
 - `testsByFile` data for attribution and incidental coverage reporting
+
+### `test`
+
+Implementation: `app/Commands/TestCommand.php`, `app/Services/ParityTestWorkspace.php`
+
+`parity test` runs each expected test file individually, normalizes the resulting single-test coverage artifact into Parity's native per-test report format, writes a report directory, and then runs `parity check` against that directory by default.
+
+Config surface:
+
+```yaml
+test:
+  command: "./vendor/bin/pest {test_abs} --coverage-clover={coverage}"
+  coverage: ".parity/tmp/{slug}.xml"
+  reports: ".parity/per-test"
+  timeout: 300
+```
+
+Supported placeholders are `{test}`, `{test_abs}`, `{coverage}`, `{slug}`, and `{project_root}`. `--output` overrides `test.reports`, `--timeout` overrides the default 300-second process timeout, and `--no-check` stops after report generation.
+
+`ParityTestWorkspace` validates artifact ownership, every existing path component, and report/coverage separation; removes runner artifacts after every attempt; writes into a sibling staging directory; atomically publishes only complete report sets; and preserves the previous set on failure. The reader rejects unsupported schema versions, mismatched test IDs, and report or source paths that escape the declared report root.
 
 ## Rules
 
@@ -251,6 +276,8 @@ Table mode renders:
 
 The first two columns are always `Source` and `Test`; the final column is always `OK`. Rule columns are added from `RuleInterface::columnHeader()`.
 
+Summary rows use `Per rule` for structure-specific thresholds and derive `OK` or `FAIL` from the evaluated rules, so they cannot contradict file rows with overrides. Files with zero executable lines are excluded from minimum and average values when the coverage format exposes executable-line metadata.
+
 ### JSON mode
 
 JSON mode emits only this top-level shape:
@@ -270,11 +297,11 @@ Each structure contains `name`, `source_path`, `test_path`, and `files`. Each fi
 
 `config/app.php` reads `APP_VERSION` or `VERSION`, then falls back to `unreleased`.
 
-`config/commands.php` is the Laravel Zero command registration file. Public commands are registered through this runtime configuration and backed by `app/Commands/InitCommand.php` and `app/Commands/CheckCommand.php`.
+`config/commands.php` is the Laravel Zero command registration file. Public commands are registered through this runtime configuration and backed by `app/Commands/InitCommand.php`, `app/Commands/CheckCommand.php`, and `app/Commands/TestCommand.php`.
 
 `app/Providers/GitVersionFallbackProvider.php` binds `git.version` to the same `VERSION` fallback behavior for packaged/runtime contexts.
 
-`dev/release-version.sh` handles dry-run and real version bumps, changelog updates, tag creation, PHAR build guidance, and dirty-worktree protection.
+`dev/release-version.sh` handles dry-run and real version bumps, changelog updates, local annotated tags, optional pushes, and dirty-worktree or duplicate-tag protection.
 
 ## Samples
 
@@ -287,3 +314,9 @@ The sample matrix validates representative layouts and coverage formats:
 | `samples/vite` | Vite/TypeScript | Cobertura |
 | `samples/adonisjs` | AdonisJS-style TypeScript | Clover |
 | `samples/rust` | Rust-style layout | Clover |
+| `samples/phpunit` | Runnable PHPUnit app | Clover |
+| `samples/pest` | Runnable Pest app | Clover plus Pest `->covers()` link validation |
+| `samples/jest` | Runnable Jest app | Clover |
+| `samples/mocha` | Runnable Mocha app | Clover |
+| `samples/vitest` | Runnable Vitest app | Clover |
+| `samples/cargo` | Runnable Cargo/Rust crate | Cobertura |

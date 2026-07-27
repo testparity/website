@@ -41,3 +41,27 @@ Use language-specific coverage tooling to produce a supported report, then point
 | JavaScript + Mocha/NYC | `clover.xml`, `parity-coverage.json` | Clover supports per-file thresholds only. |
 | TypeScript + Vitest | `clover.xml`, `cobertura.xml`, `parity-coverage.json` | Change extensions and suffixes for Vite layouts. |
 | Rust + Cargo | `cobertura.xml`, `parity-coverage.json` | Cobertura is a common aggregate coverage exchange format. |
+
+## Per-Test Report Generation
+
+When the native coverage format cannot identify individual tests, configure `parity test`:
+
+```yaml
+test:
+  command: "./vendor/bin/pest {test_abs} --coverage-clover={coverage}"
+  coverage: ".parity/tmp/{slug}.xml"
+  reports: ".parity/per-test"
+  timeout: 300
+```
+
+| Placeholder | Value |
+| --- | --- |
+| `{test}` | Expected test path relative to the project root |
+| `{test_abs}` | Absolute expected test path |
+| `{coverage}` | Absolute isolated coverage artifact path |
+| `{slug}` | Stable short hash for the expected test path |
+| `{project_root}` | Absolute project root |
+
+`reports` defaults to `.parity/per-test`, and `timeout` defaults to 300 seconds per isolated runner. `--output` and `--timeout` override those values. `parity test` runs `parity check` after generation unless `--no-check` is supplied.
+
+Keep temporary artifacts under `.parity/` and separate from `test.reports`. Parity removes each runner artifact after use, stages complete reports, and refuses roots, nested symlinks, overlapping paths, files, or unowned non-empty output directories before it deletes anything.

@@ -8,7 +8,6 @@ export default defineConfig({
   title: 'Parity',
   description: 'Structural test parity for PHP projects',
   cleanUrls: true,
-  ignoreDeadLinks: true,
   srcExclude: ['README.md', 'CLAUDE.md', '.claude/**'],
 
   head: [
