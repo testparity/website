@@ -4,3 +4,5 @@ node_modules/
 .claude/
 CLAUDE.md
 .vercel
+playwright-report/
+test-results/

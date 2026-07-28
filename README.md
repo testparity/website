@@ -20,10 +20,21 @@ npm install
 ## Development
 
 ```bash
-npm run dev -- --host 127.0.0.1 --port 4173
+npm run dev -- --host 127.0.0.1 --port 3002
 ```
 
 Open the printed local URL and verify the guide pages under `/guide/`.
+
+## Testing
+
+Install the pinned Chromium runtime once, then run the mobile navigation regression test:
+
+```bash
+npx playwright install chromium
+npm run test:e2e
+```
+
+The test command builds the site, starts an isolated preview on port `43173`, and runs Chromium at `390×844`.
 
 ## Build
 
@@ -43,11 +54,11 @@ The production build is written to `.vitepress/dist/`.
 
 ## Deployment Notes
 
-This is a static site. A deployment pipeline should run `npm ci` and `npm run build`, then publish `.vitepress/dist/` to the selected static host.
+This is a static site. The production workflow runs `npm ci`, audits dependencies, installs Chromium, and executes `npm run test:e2e` before Vercel builds and deploys the site.
 
 Before deployment, verify:
 
-- `npm run build` exits successfully.
+- `npm run test:e2e` exits successfully.
 - `/` renders the landing page.
 - `/guide/getting-started` renders the onboarding guide.
 - `/guide/specs` renders the specs and traceability overview.
