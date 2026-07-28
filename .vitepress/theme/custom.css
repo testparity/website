@@ -4044,6 +4044,13 @@
   }
 }
 
+@media (max-width: 767px) {
+  .VPNav {
+    /* Backdrop filters contain fixed descendants, collapsing VPNavScreen to the header. */
+    backdrop-filter: none;
+  }
+}
+
 @media (max-width: 640px) {
   .VPNavBarTitle .logo {
     height: 28px;
