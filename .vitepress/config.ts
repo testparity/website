@@ -66,7 +66,6 @@ export default defineConfig({
         ],
       },
       { text: 'Samples', link: '/guide/samples' },
-      { text: 'GitHub', link: 'https://github.com/testparity/cli' },
     ],
 
     sidebar: {
