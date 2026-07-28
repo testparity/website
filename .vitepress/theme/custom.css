@@ -3583,7 +3583,7 @@
 /* Global brand frame: navigation and footer */
 :root {
   --vp-nav-height: 72px;
-  --parity-nav-bg: rgba(245, 249, 252, 0.88);
+  --parity-nav-bg: var(--vp-c-bg);
   --parity-nav-border: rgba(9, 37, 61, 0.11);
   --parity-nav-hover: rgba(14, 120, 140, 0.08);
   --parity-footer-bg: #06111d;
@@ -3595,7 +3595,6 @@
 }
 
 .dark {
-  --parity-nav-bg: rgba(7, 17, 30, 0.86);
   --parity-nav-border: rgba(148, 183, 204, 0.17);
   --parity-nav-hover: rgba(83, 226, 197, 0.09);
 }
@@ -3604,6 +3603,20 @@
   border-bottom: 1px solid var(--parity-nav-border);
   background: var(--parity-nav-bg);
   backdrop-filter: blur(18px) saturate(135%);
+}
+
+.VPNav:has(.VPNavBar.home) {
+  background:
+    linear-gradient(90deg, rgba(40, 124, 255, 0.07), transparent 42%),
+    linear-gradient(rgba(255, 255, 255, 0.54), rgba(255, 255, 255, 0.54)),
+    var(--parity-page);
+}
+
+.dark .VPNav:has(.VPNavBar.home) {
+  background:
+    linear-gradient(90deg, rgba(40, 124, 255, 0.13), transparent 42%),
+    linear-gradient(rgba(16, 38, 59, 0.28), rgba(16, 38, 59, 0.28)),
+    var(--parity-page);
 }
 
 .VPNavBar,
