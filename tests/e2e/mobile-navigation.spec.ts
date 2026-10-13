@@ -19,10 +19,8 @@ test('mobile navigation fills the viewport and remains interactive', async ({ pa
   expect(menuBox!.width).toBe(390)
   expect(menuBox!.height).toBeGreaterThan(760)
 
-  const variants = menu.getByRole('button', { name: 'Variants' })
-  await variants.click()
-  await expect(variants).toHaveAttribute('aria-expanded', 'true')
-  await expect(menu.getByRole('link', { name: 'All Variations' })).toBeVisible()
+  await expect(menu.getByRole('link', { name: 'Samples' })).toBeVisible()
+  await expect(menu.getByRole('link', { name: 'Install Parity' })).toBeVisible()
 
   await menuButton.click()
   await expect(menu).toHaveCount(0)

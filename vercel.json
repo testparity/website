@@ -1,19 +1,5 @@
 {
   "buildCommand": "npm run build",
   "outputDirectory": ".vitepress/dist",
-  "cleanUrls": true,
-  "rewrites": [
-    {
-      "source": "/variants",
-      "destination": "/variants/index.html"
-    },
-    {
-      "source": "/variants/",
-      "destination": "/variants/index.html"
-    },
-    {
-      "source": "/variants/:slug",
-      "destination": "/variants/:slug.html"
-    }
-  ]
+  "cleanUrls": true
 }

@@ -6,12 +6,18 @@ const privateDocRoute = /^\/(?:CLAUDE|README)(?:\.html)?(?:$|[?#])/
 
 export default defineConfig({
   title: 'Parity',
-  description: 'Structural test parity for PHP projects',
+  description: 'Parity checks that each source file is covered by its own test, not just by the suite. Works with PHP, JavaScript, TypeScript, and Rust coverage reports.',
   cleanUrls: true,
-  srcExclude: ['README.md', 'CLAUDE.md', '.claude/**'],
+  srcExclude: ['README.md', 'CLAUDE.md', 'LICENSE', '.claude/**', 'variants/**'],
 
   head: [
     ['link', { rel: 'icon', type: 'image/png', href: '/brand/testparity-mark.png' }],
+    ['link', { rel: 'preconnect', href: 'https://fonts.googleapis.com' }],
+    ['link', { rel: 'preconnect', href: 'https://fonts.gstatic.com', crossorigin: '' }],
+    ['link', { rel: 'stylesheet', href: 'https://fonts.googleapis.com/css2?family=Schibsted+Grotesk:ital,wght@0,400..900;1,400..900&family=Spline+Sans+Mono:wght@400..700&display=swap' }],
+    ['meta', { property: 'og:title', content: 'Parity: know which test covers which file' }],
+    ['meta', { property: 'og:description', content: 'Global coverage can pass while a file\'s own test barely touches it. Parity measures the difference and gates it in CI.' }],
+    ['meta', { property: 'og:image', content: 'https://testparity.com/brand/testparity-readme-banner.jpg' }],
   ],
 
   vite: {
@@ -53,19 +59,8 @@ export default defineConfig({
 
     nav: [
       { text: 'Guide', link: '/guide/getting-started' },
-      { text: 'Specs', link: '/specs/' },
-      {
-        text: 'Variants',
-        items: [
-          { text: 'All Variations', link: '/variants/' },
-          { text: '01 Ledger', link: '/variants/ledger' },
-          { text: '02 Developer', link: '/variants/developer' },
-          { text: '03 Manual', link: '/variants/manual' },
-          { text: '04 Sample Lab', link: '/variants/lab' },
-          { text: '05 CI Room', link: '/variants/ci' },
-        ],
-      },
       { text: 'Samples', link: '/guide/samples' },
+      { text: 'Specs', link: '/specs/' },
     ],
 
     sidebar: {
