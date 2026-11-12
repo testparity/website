@@ -2,6 +2,7 @@
 import { computed, ref } from 'vue'
 
 type Owner = 'own' | 'borrowed' | 'none' | null
+type SourceSection = [label: string, start: number, end: number]
 
 interface Sample {
   id: string
@@ -12,6 +13,7 @@ interface Sample {
   otherTest: string
   all: number
   own: number
+  sections: SourceSection[]
   code: Array<[string, Owner]>
 }
 
@@ -26,7 +28,14 @@ const samples: Sample[] = [
     otherTest: 'DiscountPolicyTest.php',
     all: 80,
     own: 40,
+    sections: [['add', 9, 12], ['subtract', 14, 17], ['multiply', 19, 22], ['divide', 24, 27], ['maximum', 29, 32]],
     code: [
+      ['<?php', null],
+      ['', null],
+      ['declare(strict_types=1);', null],
+      ['', null],
+      ['namespace App;', null],
+      ['', null],
       ['final class Calculator', null],
       ['{', null],
       ['    public function add(int $left, int $right): int', 'own'],
@@ -65,6 +74,7 @@ const samples: Sample[] = [
     otherTest: 'discount.test.js',
     all: 85.71,
     own: 42.86,
+    sections: [['sum', 1, 3], ['difference', 5, 7], ['product', 9, 11], ['quotient', 13, 15], ['maximum', 17, 19], ['minimum', 21, 23], ['exports', 25, 25]],
     code: [
       ['function sum(left, right) {', 'own'],
       ['  return left + right', 'own'],
@@ -102,6 +112,7 @@ const samples: Sample[] = [
     otherTest: 'discount_test.rs',
     all: 80,
     own: 40,
+    sections: [['double', 3, 5], ['increment', 7, 9], ['square', 11, 13], ['absolute', 15, 17], ['triple', 19, 21]],
     code: [
       ['pub mod discount;', null],
       ['', null],
@@ -144,13 +155,25 @@ const ledger = [
 ]
 
 const active = ref(0)
+const selectedSection = ref(2)
 const ownOnly = ref(false)
 const sample = computed(() => samples[active.value])
-const shown = computed(() => (ownOnly.value ? sample.value.own : sample.value.all))
+const sections = computed(() => sample.value.sections.map(([label, start, end]) => ({
+  label,
+  start,
+  lines: sample.value.code.slice(start - 1, end),
+  owner: sample.value.code[start - 1][1],
+})))
+const section = computed(() => sections.value[selectedSection.value])
 const tabs = ref<HTMLButtonElement[]>([])
 
+function activateSample(index: number) {
+  active.value = index
+  selectedSection.value = 2
+}
+
 function selectTab(index: number) {
-  active.value = (index + samples.length) % samples.length
+  activateSample((index + samples.length) % samples.length)
   tabs.value[active.value]?.focus()
 }
 
@@ -208,7 +231,7 @@ async function copyCommand() {
               :aria-selected="index === active"
               :aria-controls="`panel-${item.id}`"
               :tabindex="index === active ? 0 : -1"
-              @click="active = index"
+              @click="activateSample(index)"
               @keydown="onTabKey($event, index)"
             >{{ item.label }}</button>
           </div>
@@ -224,9 +247,9 @@ async function copyCommand() {
               Only {{ sample.ownTest }}
             </button>
           </div>
-          <div class="meter-reading" aria-live="polite">
-            <strong>{{ format(shown) }}</strong>
-            <span>of this file covered</span>
+          <div class="meter-reading">
+            <span :class="{ 'is-current': !ownOnly }"><strong>{{ format(sample.all) }}</strong> all tests</span>
+            <span :class="{ 'is-current': ownOnly }"><strong>{{ format(sample.own) }}</strong> own test</span>
           </div>
           <div class="meter-bar" aria-hidden="true">
             <span class="seg own" :style="{ width: `${sample.own}%` }" />
@@ -237,21 +260,36 @@ async function copyCommand() {
         <div
           :id="`panel-${sample.id}`"
           :key="sample.id"
-          class="code"
+          class="method-picker"
           role="tabpanel"
           :aria-labelledby="`tab-${sample.id}`"
-          tabindex="0"
         >
-          <div
-            v-for="(line, index) in sample.code"
-            :key="index"
-            class="line"
-            :class="line[1] ? `is-${line[1]}` : ''"
-            :style="{ '--i': index }"
-          >
-            <span class="ln">{{ index + 1 }}</span>
-            <span class="gutter" />
-            <code>{{ line[0] || ' ' }}</code>
+          <div class="method-list" role="group" aria-label="Source sections">
+            <button
+              v-for="(item, index) in sections"
+              :key="item.label"
+              type="button"
+              :aria-pressed="index === selectedSection"
+              aria-controls="method-source"
+              @click="selectedSection = index"
+            >
+              <i aria-hidden="true" class="key" :class="ownOnly && item.owner === 'borrowed' ? 'none' : item.owner" />
+              <code>{{ item.label }}</code>
+              <span class="sr-only">{{ item.owner === 'own' ? 'Covered by own test' : item.owner === 'borrowed' && !ownOnly ? 'Covered only by other tests' : 'Not covered' }}</span>
+            </button>
+          </div>
+          <div id="method-source" class="code" role="region" :aria-label="`${section.label} source`" tabindex="0">
+            <div
+              v-for="(line, index) in section.lines"
+              :key="section.start + index"
+              class="line"
+              :class="line[1] ? `is-${line[1]}` : ''"
+              :style="{ '--i': index }"
+            >
+              <span class="ln">{{ section.start + index }}</span>
+              <span class="gutter" />
+              <code>{{ line[0] }}</code>
+            </div>
           </div>
         </div>
 
@@ -514,13 +552,14 @@ Per-file min
 
 .meter-reading {
   display: flex;
-  gap: 10px;
+  flex-wrap: wrap;
+  gap: 4px 12px;
   align-items: baseline;
   justify-self: end;
 }
 
 .meter-reading strong {
-  font-size: 2rem;
+  font-size: 1.3rem;
   font-weight: 800;
   font-variant-numeric: tabular-nums;
   letter-spacing: -0.03em;
@@ -530,6 +569,10 @@ Per-file min
 .meter-reading span {
   color: var(--p-muted);
   font-size: 0.88rem;
+}
+
+.meter-reading .is-current strong {
+  color: var(--p-ink);
 }
 
 .meter-bar,
@@ -560,7 +603,39 @@ Per-file min
   background: var(--p-hatch);
 }
 
+.method-picker {
+  display: grid;
+  grid-template-columns: max-content minmax(0, 1fr);
+}
+
+.method-list {
+  display: grid;
+  align-content: start;
+  padding: 6px;
+  border-right: 1px solid var(--p-line);
+}
+
+.method-list button {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  min-height: 30px;
+  padding: 2px 8px;
+  border-radius: 4px;
+  text-align: left;
+}
+
+.method-list button[aria-pressed='true'],
+.method-list button:hover {
+  background: var(--p-empty);
+}
+
+.method-list code {
+  font-size: 0.8rem;
+}
+
 .code {
+  min-width: 0;
   padding: 12px 0 14px;
   overflow-x: auto;
   font-family: var(--vp-font-family-mono);
@@ -965,6 +1040,17 @@ a:focus-visible {
 }
 
 @media (max-width: 560px) {
+  .method-picker {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .method-list {
+    display: flex;
+    flex-wrap: wrap;
+    border-right: 0;
+    border-bottom: 1px solid var(--p-line);
+  }
+
   .meter {
     grid-template-columns: 1fr;
   }
