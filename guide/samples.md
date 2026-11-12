@@ -20,7 +20,7 @@ No sample commits coverage results. In CI, every sample runs its native suite, t
 
 ## The Proof
 
-Every sample has one weakly owned file and one strongly owned file. In the weak file, the belonging test covers only part of the code, and another test file covers the rest incidentally. Global coverage passes. Parity's `matched-coverage` rule shows how much the belonging test covers by itself, and `coverage-attribution` reports `2|1`: two tests cover the file, and one of them does not belong to it.
+Every sample has one weakly owned file and one strongly owned file. In the weak file, the belonging test covers only part of the code, and an unrelated test file adds incidental coverage. Global coverage passes. Parity's `matched-coverage` rule shows how much the belonging test covers by itself, and `coverage-attribution` reports `2|1`: two tests cover the file, and one of them does not belong to it.
 
 | Sample | Weakly owned file | All tests | Belonging test only | Project total |
 | --- | --- | ---: | ---: | ---: |
