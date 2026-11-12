@@ -27,6 +27,12 @@ const samples: Sample[] = [
     all: 80,
     own: 40,
     code: [
+      ['<?php', null],
+      ['', null],
+      ['declare(strict_types=1);', null],
+      ['', null],
+      ['namespace App;', null],
+      ['', null],
       ['final class Calculator', null],
       ['{', null],
       ['    public function add(int $left, int $right): int', 'own'],
@@ -234,12 +240,14 @@ async function copyCommand() {
           </div>
         </div>
 
+        <div class="code-hint" id="sample-scroll-hint">Scroll to view all {{ sample.code.length }} lines</div>
         <div
           :id="`panel-${sample.id}`"
           :key="sample.id"
           class="code"
           role="tabpanel"
           :aria-labelledby="`tab-${sample.id}`"
+          aria-describedby="sample-scroll-hint"
           tabindex="0"
         >
           <div
@@ -560,9 +568,18 @@ Per-file min
   background: var(--p-hatch);
 }
 
+.code-hint {
+  padding: 5px 16px;
+  border-bottom: 1px solid var(--p-line);
+  color: var(--p-muted);
+  font-size: 0.76rem;
+}
+
 .code {
-  padding: 12px 0 14px;
-  overflow-x: auto;
+  max-height: 13rem;
+  padding: 8px 0;
+  overflow: auto;
+  scrollbar-gutter: stable;
   font-family: var(--vp-font-family-mono);
   font-size: 0.84rem;
   line-height: 1.6;
