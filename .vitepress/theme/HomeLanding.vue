@@ -12,6 +12,7 @@ interface Sample {
   otherTest: string
   all: number
   own: number
+  highlights: number[]
   code: Array<[string, Owner]>
 }
 
@@ -26,7 +27,14 @@ const samples: Sample[] = [
     otherTest: 'DiscountPolicyTest.php',
     all: 80,
     own: 40,
+    highlights: [11, 16, 21, 26, 31],
     code: [
+      ['<?php', null],
+      ['', null],
+      ['declare(strict_types=1);', null],
+      ['', null],
+      ['namespace App;', null],
+      ['', null],
       ['final class Calculator', null],
       ['{', null],
       ['    public function add(int $left, int $right): int', 'own'],
@@ -65,6 +73,7 @@ const samples: Sample[] = [
     otherTest: 'discount.test.js',
     all: 85.71,
     own: 42.86,
+    highlights: [2, 6, 10, 14, 18, 22, 25],
     code: [
       ['function sum(left, right) {', 'own'],
       ['  return left + right', 'own'],
@@ -102,6 +111,7 @@ const samples: Sample[] = [
     otherTest: 'discount_test.rs',
     all: 80,
     own: 40,
+    highlights: [4, 8, 12, 16, 20],
     code: [
       ['pub mod discount;', null],
       ['', null],
@@ -145,8 +155,12 @@ const ledger = [
 
 const active = ref(0)
 const ownOnly = ref(false)
+const sourceExpanded = ref(false)
 const sample = computed(() => samples[active.value])
-const shown = computed(() => (ownOnly.value ? sample.value.own : sample.value.all))
+const sourceRows = computed(() => {
+  const rows = sample.value.code.map(([code, owner], index) => ({ code, owner, number: index + 1 }))
+  return sourceExpanded.value ? rows : rows.filter(row => sample.value.highlights.includes(row.number))
+})
 const tabs = ref<HTMLButtonElement[]>([])
 
 function selectTab(index: number) {
@@ -224,9 +238,9 @@ async function copyCommand() {
               Only {{ sample.ownTest }}
             </button>
           </div>
-          <div class="meter-reading" aria-live="polite">
-            <strong>{{ format(shown) }}</strong>
-            <span>of this file covered</span>
+          <div class="meter-reading">
+            <span :class="{ 'is-active': !ownOnly }"><strong>{{ format(sample.all) }}</strong> all tests</span>
+            <span :class="{ 'is-active': ownOnly }"><strong>{{ format(sample.own) }}</strong> own test</span>
           </div>
           <div class="meter-bar" aria-hidden="true">
             <span class="seg own" :style="{ width: `${sample.own}%` }" />
@@ -243,15 +257,15 @@ async function copyCommand() {
           tabindex="0"
         >
           <div
-            v-for="(line, index) in sample.code"
-            :key="index"
+            v-for="(line, index) in sourceRows"
+            :key="line.number"
             class="line"
-            :class="line[1] ? `is-${line[1]}` : ''"
+            :class="line.owner ? `is-${line.owner}` : ''"
             :style="{ '--i': index }"
           >
-            <span class="ln">{{ index + 1 }}</span>
+            <span class="ln">{{ line.number }}</span>
             <span class="gutter" />
-            <code>{{ line[0] || ' ' }}</code>
+            <code>{{ line.code || ' ' }}</code>
           </div>
         </div>
 
@@ -259,7 +273,17 @@ async function copyCommand() {
           <span><i class="key own" />Covered by {{ sample.ownTest }}</span>
           <span><i class="key borrowed" />Covered only by {{ sample.otherTest }}</span>
           <span><i class="key none" />Not covered</span>
-          <a :href="sample.repo">Open this sample on GitHub</a>
+          <div class="trace-footer">
+            <button
+              type="button"
+              :aria-expanded="sourceExpanded"
+              :aria-controls="`panel-${sample.id}`"
+              @click="sourceExpanded = !sourceExpanded"
+            >
+              {{ sourceExpanded ? 'Collapse source' : `Full source (${sample.code.length} lines)` }}
+            </button>
+            <a :href="sample.repo">Open this sample on GitHub</a>
+          </div>
         </figcaption>
       </figure>
     </section>
@@ -514,13 +538,14 @@ Per-file min
 
 .meter-reading {
   display: flex;
-  gap: 10px;
+  flex-wrap: wrap;
+  gap: 4px 12px;
   align-items: baseline;
   justify-self: end;
 }
 
 .meter-reading strong {
-  font-size: 2rem;
+  font-size: 1.3rem;
   font-weight: 800;
   font-variant-numeric: tabular-nums;
   letter-spacing: -0.03em;
@@ -530,6 +555,10 @@ Per-file min
 .meter-reading span {
   color: var(--p-muted);
   font-size: 0.88rem;
+}
+
+.meter-reading .is-active strong {
+  color: var(--p-ink);
 }
 
 .meter-bar,
@@ -656,8 +685,17 @@ Per-file min
   align-items: center;
 }
 
-.legend a {
-  margin-left: auto;
+.trace-footer {
+  display: flex;
+  flex: 1 0 100%;
+  flex-wrap: wrap;
+  gap: 8px 16px;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.trace-footer button,
+.trace-footer a {
   color: var(--p-ink);
   font-weight: 650;
   text-decoration: underline;
@@ -986,10 +1024,6 @@ a:focus-visible {
   .ledger-bar {
     grid-column: 1 / -1;
     grid-row: 2;
-  }
-
-  .legend a {
-    margin-left: 0;
   }
 
   .command {
