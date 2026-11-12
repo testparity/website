@@ -13,6 +13,7 @@ interface Sample {
   all: number
   own: number
   code: Array<[string, Owner]>
+  sections: Array<[name: string, start: number, end: number]>
 }
 
 // Line ownership mirrors what `parity test` reports in each public sample repository.
@@ -22,11 +23,24 @@ const samples: Sample[] = [
     label: 'PHP',
     repo: 'https://github.com/testparity/php-sample',
     file: 'src/Calculator.php',
+    sections: [
+      ['add', 9, 12],
+      ['subtract', 14, 17],
+      ['multiply', 19, 22],
+      ['divide', 24, 27],
+      ['maximum', 29, 32],
+    ],
     ownTest: 'CalculatorTest.php',
     otherTest: 'DiscountPolicyTest.php',
     all: 80,
     own: 40,
     code: [
+      ['<?php', null],
+      ['', null],
+      ['declare(strict_types=1);', null],
+      ['', null],
+      ['namespace App;', null],
+      ['', null],
       ['final class Calculator', null],
       ['{', null],
       ['    public function add(int $left, int $right): int', 'own'],
@@ -61,6 +75,15 @@ const samples: Sample[] = [
     label: 'JavaScript',
     repo: 'https://github.com/testparity/jest-sample',
     file: 'src/sum.js',
+    sections: [
+      ['sum', 1, 3],
+      ['difference', 5, 7],
+      ['product', 9, 11],
+      ['quotient', 13, 15],
+      ['maximum', 17, 19],
+      ['minimum', 21, 23],
+      ['Module exports', 25, 25],
+    ],
     ownTest: 'sum.test.js',
     otherTest: 'discount.test.js',
     all: 85.71,
@@ -98,6 +121,13 @@ const samples: Sample[] = [
     label: 'Rust',
     repo: 'https://github.com/testparity/rust-sample',
     file: 'src/lib.rs',
+    sections: [
+      ['double', 3, 5],
+      ['increment', 7, 9],
+      ['square', 11, 13],
+      ['absolute', 15, 17],
+      ['triple', 19, 21],
+    ],
     ownTest: 'lib_test.rs',
     otherTest: 'discount_test.rs',
     all: 80,
@@ -146,11 +176,30 @@ const ledger = [
 const active = ref(0)
 const ownOnly = ref(false)
 const sample = computed(() => samples[active.value])
+const sections = computed(() => sample.value.sections.map(([name, start, end]) => ({
+  name,
+  start,
+  lines: sample.value.code.slice(start - 1, end),
+  owner: sample.value.code[start - 1][1],
+})))
+const openSection = ref<number | null>(2)
+
+function changeSample(index: number) {
+  if (active.value === index) return
+  active.value = index
+  openSection.value = sections.value.findIndex(section => section.owner === 'borrowed')
+}
+
+function coverageLabel(owner: Owner) {
+  if (owner === 'own') return 'Own test'
+  if (owner === 'borrowed' && !ownOnly.value) return 'Other test'
+  return 'Not covered'
+}
 const shown = computed(() => (ownOnly.value ? sample.value.own : sample.value.all))
 const tabs = ref<HTMLButtonElement[]>([])
 
 function selectTab(index: number) {
-  active.value = (index + samples.length) % samples.length
+  changeSample((index + samples.length) % samples.length)
   tabs.value[active.value]?.focus()
 }
 
@@ -208,7 +257,7 @@ async function copyCommand() {
               :aria-selected="index === active"
               :aria-controls="`panel-${item.id}`"
               :tabindex="index === active ? 0 : -1"
-              @click="active = index"
+              @click="changeSample(index)"
               @keydown="onTabKey($event, index)"
             >{{ item.label }}</button>
           </div>
@@ -237,21 +286,46 @@ async function copyCommand() {
         <div
           :id="`panel-${sample.id}`"
           :key="sample.id"
-          class="code"
+          class="sections"
           role="tabpanel"
           :aria-labelledby="`tab-${sample.id}`"
           tabindex="0"
         >
-          <div
-            v-for="(line, index) in sample.code"
-            :key="index"
-            class="line"
-            :class="line[1] ? `is-${line[1]}` : ''"
-            :style="{ '--i': index }"
-          >
-            <span class="ln">{{ index + 1 }}</span>
-            <span class="gutter" />
-            <code>{{ line[0] || ' ' }}</code>
+          <div v-for="(section, index) in sections" :key="section.start" class="source-section">
+            <button
+              type="button"
+              class="section-toggle"
+              :aria-expanded="openSection === index"
+              :aria-controls="`source-${sample.id}-${index}`"
+              @click="openSection = openSection === index ? null : index"
+            >
+              <span class="chevron" aria-hidden="true" />
+              <span class="section-name">{{ section.name }}</span>
+              <span class="section-status">
+                <i class="key" :class="ownOnly && section.owner === 'borrowed' ? 'none' : section.owner" aria-hidden="true" />
+                {{ coverageLabel(section.owner) }}
+              </span>
+            </button>
+            <div
+              v-show="openSection === index"
+              :id="`source-${sample.id}-${index}`"
+              class="code"
+              role="region"
+              :aria-label="`${section.name} source`"
+              tabindex="0"
+            >
+              <div
+                v-for="(line, offset) in section.lines"
+                :key="offset"
+                class="line"
+                :class="line[1] ? `is-${line[1]}` : ''"
+                :style="{ '--i': offset }"
+              >
+                <span class="ln">{{ section.start + offset }}</span>
+                <span class="gutter" />
+                <code>{{ line[0] }}</code>
+              </div>
+            </div>
           </div>
         </div>
 
@@ -560,15 +634,66 @@ Per-file min
   background: var(--p-hatch);
 }
 
+.source-section + .source-section {
+  border-top: 1px solid var(--p-line);
+}
+
+.section-toggle {
+  display: grid;
+  grid-template-columns: 8px minmax(0, 1fr) auto;
+  gap: 12px;
+  align-items: center;
+  width: 100%;
+  min-height: 36px;
+  padding: 5px 16px;
+  text-align: left;
+}
+
+.section-toggle:hover,
+.section-toggle[aria-expanded='true'] {
+  background: var(--p-paper);
+}
+
+.section-toggle:focus-visible {
+  outline-offset: -2px;
+}
+
+.chevron {
+  width: 6px;
+  height: 6px;
+  border-right: 1.5px solid currentColor;
+  border-bottom: 1.5px solid currentColor;
+  transform: rotate(-45deg);
+}
+
+.section-toggle[aria-expanded='true'] .chevron {
+  transform: rotate(45deg);
+}
+
+.section-name {
+  font-family: var(--vp-font-family-mono);
+  font-size: 0.87rem;
+}
+
+.section-status {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  color: var(--p-muted);
+  font-size: 0.78rem;
+}
+
 .code {
-  padding: 12px 0 14px;
+  padding: 8px 0;
+  border-top: 1px solid var(--p-line);
   overflow-x: auto;
   font-family: var(--vp-font-family-mono);
   font-size: 0.84rem;
   line-height: 1.6;
 }
 
-.code:focus-visible {
+.code:focus-visible,
+.sections:focus-visible {
   outline: 2px solid var(--p-own-strong);
   outline-offset: -2px;
 }
