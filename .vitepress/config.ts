@@ -89,6 +89,7 @@ export default defineConfig({
             { text: 'Pest Support', link: '/guide/pest-support' },
             { text: 'PHPUnit Support', link: '/guide/phpunit-support' },
             { text: 'CI Integration', link: '/guide/ci-integration' },
+            { text: 'Changed-line Coverage', link: '/guide/pr-coverage' },
           ],
         },
         {
