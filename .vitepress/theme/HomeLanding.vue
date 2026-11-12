@@ -1,7 +1,13 @@
 <script setup lang="ts">
 import { computed, ref } from 'vue'
 
-type Owner = 'own' | 'borrowed' | 'none' | null
+type Owner = 'own' | 'borrowed' | 'none'
+
+interface SourceRow {
+  label: string
+  owner: Owner
+  excerpt?: { number: number; code: string }
+}
 
 interface Sample {
   id: string
@@ -12,7 +18,7 @@ interface Sample {
   otherTest: string
   all: number
   own: number
-  code: Array<[string, Owner]>
+  rows: SourceRow[]
 }
 
 // Line ownership mirrors what `parity test` reports in each public sample repository.
@@ -26,71 +32,31 @@ const samples: Sample[] = [
     otherTest: 'DiscountPolicyTest.php',
     all: 80,
     own: 40,
-    code: [
-      ['final class Calculator', null],
-      ['{', null],
-      ['    public function add(int $left, int $right): int', 'own'],
-      ['    {', 'own'],
-      ['        return $left + $right;', 'own'],
-      ['    }', 'own'],
-      ['', null],
-      ['    public function subtract(int $left, int $right): int', 'own'],
-      ['    {', 'own'],
-      ['        return $left - $right;', 'own'],
-      ['    }', 'own'],
-      ['', null],
-      ['    public function multiply(int $left, int $right): int', 'borrowed'],
-      ['    {', 'borrowed'],
-      ['        return $left * $right;', 'borrowed'],
-      ['    }', 'borrowed'],
-      ['', null],
-      ['    public function divide(int $left, int $right): int', 'borrowed'],
-      ['    {', 'borrowed'],
-      ['        return intdiv($left, $right);', 'borrowed'],
-      ['    }', 'borrowed'],
-      ['', null],
-      ['    public function maximum(int $left, int $right): int', 'none'],
-      ['    {', 'none'],
-      ['        return max($left, $right);', 'none'],
-      ['    }', 'none'],
-      ['}', null],
+    rows: [
+      { label: 'add()', owner: 'own' },
+      { label: 'subtract()', owner: 'own' },
+      { label: 'multiply()', owner: 'borrowed', excerpt: { number: 21, code: 'return $left * $right;' } },
+      { label: 'divide()', owner: 'borrowed', excerpt: { number: 26, code: 'return intdiv($left, $right);' } },
+      { label: 'maximum()', owner: 'none' },
     ],
   },
   {
     id: 'js',
     label: 'JavaScript',
     repo: 'https://github.com/testparity/jest-sample',
-    file: 'src/sum.js',
+    file: 'code/src/sum.js',
     ownTest: 'sum.test.js',
     otherTest: 'discount.test.js',
     all: 85.71,
     own: 42.86,
-    code: [
-      ['function sum(left, right) {', 'own'],
-      ['  return left + right', 'own'],
-      ['}', 'own'],
-      ['', null],
-      ['function difference(left, right) {', 'own'],
-      ['  return left - right', 'own'],
-      ['}', 'own'],
-      ['', null],
-      ['function product(left, right) {', 'borrowed'],
-      ['  return left * right', 'borrowed'],
-      ['}', 'borrowed'],
-      ['', null],
-      ['function quotient(left, right) {', 'borrowed'],
-      ['  return left / right', 'borrowed'],
-      ['}', 'borrowed'],
-      ['', null],
-      ['function maximum(left, right) {', 'borrowed'],
-      ['  return Math.max(left, right)', 'borrowed'],
-      ['}', 'borrowed'],
-      ['', null],
-      ['function minimum(left, right) {', 'none'],
-      ['  return Math.min(left, right)', 'none'],
-      ['}', 'none'],
-      ['', null],
-      ['module.exports = { sum, difference, product, quotient, maximum, minimum }', 'own'],
+    rows: [
+      { label: 'sum()', owner: 'own' },
+      { label: 'difference()', owner: 'own' },
+      { label: 'product()', owner: 'borrowed', excerpt: { number: 10, code: 'return left * right' } },
+      { label: 'quotient()', owner: 'borrowed', excerpt: { number: 14, code: 'return left / right' } },
+      { label: 'maximum()', owner: 'borrowed' },
+      { label: 'minimum()', owner: 'none' },
+      { label: 'module.exports', owner: 'own' },
     ],
   },
   {
@@ -102,28 +68,12 @@ const samples: Sample[] = [
     otherTest: 'discount_test.rs',
     all: 80,
     own: 40,
-    code: [
-      ['pub mod discount;', null],
-      ['', null],
-      ['pub fn double(value: i32) -> i32 {', 'own'],
-      ['    value * 2', 'own'],
-      ['}', 'own'],
-      ['', null],
-      ['pub fn increment(value: i32) -> i32 {', 'own'],
-      ['    value + 1', 'own'],
-      ['}', 'own'],
-      ['', null],
-      ['pub fn square(value: i32) -> i32 {', 'borrowed'],
-      ['    value * value', 'borrowed'],
-      ['}', 'borrowed'],
-      ['', null],
-      ['pub fn absolute(value: i32) -> i32 {', 'borrowed'],
-      ['    value.abs()', 'borrowed'],
-      ['}', 'borrowed'],
-      ['', null],
-      ['pub fn triple(value: i32) -> i32 {', 'none'],
-      ['    value * 3', 'none'],
-      ['}', 'none'],
+    rows: [
+      { label: 'double()', owner: 'own' },
+      { label: 'increment()', owner: 'own' },
+      { label: 'square()', owner: 'borrowed', excerpt: { number: 12, code: 'value * value' } },
+      { label: 'absolute()', owner: 'borrowed', excerpt: { number: 16, code: 'value.abs()' } },
+      { label: 'triple()', owner: 'none' },
     ],
   },
 ]
@@ -146,7 +96,8 @@ const ledger = [
 const active = ref(0)
 const ownOnly = ref(false)
 const sample = computed(() => samples[active.value])
-const shown = computed(() => (ownOnly.value ? sample.value.own : sample.value.all))
+const excerpts = computed(() => sample.value.rows.flatMap(row => row.excerpt ? [row.excerpt] : []))
+const coverageLabels = { own: 'Own test', borrowed: 'Other tests', none: 'Uncovered' }
 const tabs = ref<HTMLButtonElement[]>([])
 
 function selectTab(index: number) {
@@ -215,43 +166,58 @@ async function copyCommand() {
           <span class="file">{{ sample.file }}</span>
         </div>
 
-        <div class="meter">
-          <div class="meter-switch" role="group" aria-label="Which tests count">
-            <button type="button" :aria-pressed="!ownOnly" @click="ownOnly = false">
-              All tests
-            </button>
-            <button type="button" :aria-pressed="ownOnly" @click="ownOnly = true">
-              Only {{ sample.ownTest }}
-            </button>
-          </div>
-          <div class="meter-reading" aria-live="polite">
-            <strong>{{ format(shown) }}</strong>
-            <span>of this file covered</span>
-          </div>
-          <div class="meter-bar" aria-hidden="true">
-            <span class="seg own" :style="{ width: `${sample.own}%` }" />
-            <span class="seg borrowed" :style="{ width: `${ownOnly ? 0 : sample.all - sample.own}%` }" />
-          </div>
-        </div>
-
         <div
           :id="`panel-${sample.id}`"
           :key="sample.id"
-          class="code"
+          class="matrix-panel"
           role="tabpanel"
           :aria-labelledby="`tab-${sample.id}`"
           tabindex="0"
         >
-          <div
-            v-for="(line, index) in sample.code"
-            :key="index"
-            class="line"
-            :class="line[1] ? `is-${line[1]}` : ''"
-            :style="{ '--i': index }"
-          >
-            <span class="ln">{{ index + 1 }}</span>
-            <span class="gutter" />
-            <code>{{ line[0] || ' ' }}</code>
+          <table class="coverage-matrix" aria-label="Coverage by source item">
+            <thead>
+              <tr>
+                <th scope="col">Source</th>
+                <th scope="col" :class="{ 'active-column': !ownOnly }">
+                  <button type="button" :aria-pressed="!ownOnly" @click="ownOnly = false">
+                    <span>All tests</span>
+                    <strong>{{ format(sample.all) }}</strong>
+                  </button>
+                </th>
+                <th scope="col" :class="{ 'active-column': ownOnly }">
+                  <button
+                    type="button"
+                    :aria-label="`Own test: ${sample.ownTest}, ${format(sample.own)}`"
+                    :aria-pressed="ownOnly"
+                    @click="ownOnly = true"
+                  >
+                    <span>Own test</span>
+                    <strong>{{ format(sample.own) }}</strong>
+                  </button>
+                </th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr v-for="row in sample.rows" :key="row.label">
+                <th scope="row"><code>{{ row.label }}</code></th>
+                <td :class="{ 'active-column': !ownOnly }">
+                  <i class="key" :class="row.owner" aria-hidden="true" />
+                  {{ coverageLabels[row.owner] }}
+                </td>
+                <td :class="{ 'active-column': ownOnly }">
+                  <i class="key" :class="row.owner === 'own' ? 'own' : 'none'" aria-hidden="true" />
+                  {{ row.owner === 'own' ? coverageLabels.own : coverageLabels.none }}
+                </td>
+              </tr>
+            </tbody>
+          </table>
+
+          <div class="code" role="group" aria-label="Lines covered only by other tests" tabindex="0">
+            <div v-for="line in excerpts" :key="line.number" class="line is-borrowed">
+              <span class="ln">{{ line.number }}</span>
+              <span class="gutter" />
+              <code>{{ line.code }}</code>
+            </div>
           </div>
         </div>
 
@@ -259,7 +225,7 @@ async function copyCommand() {
           <span><i class="key own" />Covered by {{ sample.ownTest }}</span>
           <span><i class="key borrowed" />Covered only by {{ sample.otherTest }}</span>
           <span><i class="key none" />Not covered</span>
-          <a :href="sample.repo">Open this sample on GitHub</a>
+          <a :href="`${sample.repo}/blob/HEAD/${sample.file}`">View full source on GitHub</a>
         </figcaption>
       </figure>
     </section>
@@ -465,8 +431,7 @@ Per-file min
   gap: 4px;
 }
 
-.tabs button,
-.meter-switch button {
+.tabs button {
   min-height: 34px;
   padding: 0 12px;
   border-radius: 5px;
@@ -490,59 +455,68 @@ Per-file min
   color: var(--p-muted);
 }
 
-.meter {
-  display: grid;
-  grid-template-columns: auto 1fr;
-  gap: 14px 20px;
-  align-items: center;
-  padding: 16px 16px 18px;
+.matrix-panel:focus-visible {
+  outline: 2px solid var(--p-own-strong);
+  outline-offset: -2px;
+}
+
+.coverage-matrix {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.82rem;
+  line-height: 1.4;
+}
+
+.coverage-matrix :is(th, td) {
+  padding: 6px 10px;
   border-bottom: 1px solid var(--p-line);
+  text-align: center;
 }
 
-.meter-switch {
-  display: inline-flex;
-  padding: 3px;
-  border: 1px solid var(--p-line);
-  border-radius: 7px;
+.coverage-matrix th:first-child {
+  padding-left: 16px;
+  text-align: left;
 }
 
-.meter-switch button[aria-pressed='true'] {
-  background: var(--p-paper);
-  color: var(--p-ink);
-  box-shadow: 0 0 0 1px var(--p-line);
-}
-
-.meter-reading {
-  display: flex;
-  gap: 10px;
-  align-items: baseline;
-  justify-self: end;
-}
-
-.meter-reading strong {
-  font-size: 2rem;
-  font-weight: 800;
-  font-variant-numeric: tabular-nums;
-  letter-spacing: -0.03em;
-  line-height: 1;
-}
-
-.meter-reading span {
+.coverage-matrix button {
+  display: grid;
+  gap: 2px;
+  width: 100%;
+  border-radius: 5px;
   color: var(--p-muted);
-  font-size: 0.88rem;
 }
 
-.meter-bar,
+.coverage-matrix button[aria-pressed='true'],
+.coverage-matrix button:hover {
+  color: var(--p-ink);
+}
+
+.coverage-matrix strong {
+  font-size: 1.35rem;
+  font-variant-numeric: tabular-nums;
+}
+
+.coverage-matrix .active-column {
+  background: var(--p-empty);
+}
+
+.coverage-matrix .key {
+  width: 10px;
+  height: 10px;
+  vertical-align: baseline;
+}
+
+.coverage-matrix code {
+  font-size: inherit;
+  overflow-wrap: anywhere;
+}
+
 .ledger-bar {
   display: flex;
   height: 12px;
   border-radius: 3px;
   background: var(--p-empty);
   overflow: hidden;
-}
-
-.meter-bar {
-  grid-column: 1 / -1;
 }
 
 .seg {
@@ -600,24 +574,12 @@ Per-file min
   white-space: pre;
 }
 
-.line.is-own .gutter {
-  background: var(--p-own);
-}
-
 .line.is-borrowed .gutter {
   background: var(--p-hatch);
 }
 
 .line.is-borrowed {
   background: var(--p-borrowed-wash);
-}
-
-.line.is-none .gutter {
-  box-shadow: inset 0 0 0 1.5px var(--p-faint);
-}
-
-.line.is-none code {
-  color: var(--p-muted);
 }
 
 .own-only .line.is-borrowed {
@@ -917,21 +879,6 @@ a:focus-visible {
   outline-offset: 2px;
 }
 
-/* The one orchestrated moment: the gutter fills in top to bottom on first paint. */
-@media (prefers-reduced-motion: no-preference) {
-  .line .gutter {
-    animation: gutter-in 380ms cubic-bezier(0.2, 0.7, 0.2, 1) both;
-    animation-delay: calc(var(--i) * 28ms + 150ms);
-    transform-origin: top;
-  }
-
-  @keyframes gutter-in {
-    from {
-      transform: scaleY(0);
-    }
-  }
-}
-
 @media (prefers-reduced-motion: reduce) {
   .seg,
   .line,
@@ -965,17 +912,8 @@ a:focus-visible {
 }
 
 @media (max-width: 560px) {
-  .meter {
-    grid-template-columns: 1fr;
-  }
-
-  .meter-reading {
-    justify-self: start;
-  }
-
-  .meter-switch button {
-    padding: 0 10px;
-    font-size: 0.82rem;
+  .coverage-matrix :is(th, td) {
+    padding-inline: 5px;
   }
 
   .ledger-rows a {
