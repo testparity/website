@@ -1,9 +1,9 @@
 import { expect, test } from '@playwright/test'
 
 const samples = [
-  { language: 'PHP', ownTest: 'CalculatorTest.php', all: '80%', own: '40%', lines: 33, foldedLines: 25, maxHeight: 248, repo: 'php-sample' },
+  { language: 'PHP', ownTest: 'CalculatorTest.php', all: '80%', own: '40%', lines: 33, preamble: 6, repo: 'php-sample' },
   { language: 'JavaScript', ownTest: 'sum.test.js', all: '85.71%', own: '42.86%', lines: 25, repo: 'jest-sample' },
-  { language: 'Rust', ownTest: 'lib_test.rs', all: '80%', own: '40%', lines: 21, foldedLines: 2, repo: 'rust-sample' },
+  { language: 'Rust', ownTest: 'lib_test.rs', all: '80%', own: '40%', lines: 21, preamble: 2, repo: 'rust-sample' },
 ]
 
 for (const sample of samples) {
@@ -13,22 +13,15 @@ for (const sample of samples) {
 
     const panel = page.getByRole('tabpanel', { name: sample.language })
     await expect(panel).toHaveAccessibleDescription(
-      sample.foldedLines ? 'Scroll through the source or expand the hidden lines' : 'Scroll through the source',
+      sample.preamble ? 'Scroll through the source or expand the hidden lines' : 'Scroll through the source',
     )
-    await expect(panel.locator('.line:visible')).toHaveCount(sample.lines - (sample.foldedLines ?? 0))
+    await expect(panel.locator('.line:visible')).toHaveCount(sample.lines - (sample.preamble ?? 0))
     await expect(panel.locator('.line')).toHaveCount(sample.lines)
     await expect(panel).toHaveCSS('overflow-y', 'auto')
-    expect(await panel.evaluate(element => element.clientHeight)).toBeLessThanOrEqual(sample.maxHeight ?? 208)
+    expect(await panel.evaluate(element => element.clientHeight)).toBeLessThanOrEqual(208)
     await expect(page.locator('.meter-reading strong')).toHaveText(sample.all)
     const footerLink = page.getByRole('link', { name: 'Open this sample on GitHub' })
     await expect(footerLink).toHaveAttribute('href', `https://github.com/testparity/${sample.repo}`)
-
-    if (sample.language === 'PHP') {
-      await panel.scrollIntoViewIfNeeded()
-      await expect(panel.locator('.is-own').filter({ hasText: 'return $left + $right' })).toBeInViewport()
-      await expect(panel.locator('.is-borrowed').filter({ hasText: 'return $left * $right' })).toBeInViewport()
-      await panel.locator('summary').filter({ hasText: 'lines 23–33' }).click()
-    }
 
     await panel.focus()
     await page.keyboard.press('End')
@@ -46,14 +39,14 @@ for (const sample of samples) {
 test('PHP boilerplate expands with the keyboard and collapses without renumbering the source', async ({ page }) => {
   await page.goto('/')
   const panel = page.getByRole('tabpanel', { name: 'PHP' })
-  const disclosure = panel.locator('summary').first()
+  const disclosure = panel.locator('summary')
   const openingTag = panel.getByText('<?php', { exact: true })
   const namespace = panel.getByText('namespace App;', { exact: true })
 
-  await expect(disclosure).toHaveText('Show lines 1–8', { useInnerText: true })
+  await expect(disclosure).toHaveText('Show lines 1–6', { useInnerText: true })
   await expect(openingTag).toBeHidden()
   await expect(namespace).toBeHidden()
-  await expect(panel.locator('.line:visible .ln').first()).toHaveText('9')
+  await expect(panel.locator('.line:visible .ln').first()).toHaveText('7')
 
   await disclosure.focus()
   await page.keyboard.press('Enter')
@@ -63,5 +56,5 @@ test('PHP boilerplate expands with the keyboard and collapses without renumberin
 
   await disclosure.click()
   await expect(namespace).toBeHidden()
-  await expect(panel.locator('.line:visible .ln').first()).toHaveText('9')
+  await expect(panel.locator('.line:visible .ln').first()).toHaveText('7')
 })
