@@ -12,6 +12,7 @@ interface Sample {
   otherTest: string
   all: number
   own: number
+  foldedRanges?: Array<[first: number, last: number]>
   code: Array<[string, Owner]>
 }
 
@@ -22,11 +23,18 @@ const samples: Sample[] = [
     label: 'PHP',
     repo: 'https://github.com/testparity/php-sample',
     file: 'src/Calculator.php',
+    foldedRanges: [[1, 8], [13, 18], [23, 33]],
     ownTest: 'CalculatorTest.php',
     otherTest: 'DiscountPolicyTest.php',
     all: 80,
     own: 40,
     code: [
+      ['<?php', null],
+      ['', null],
+      ['declare(strict_types=1);', null],
+      ['', null],
+      ['namespace App;', null],
+      ['', null],
       ['final class Calculator', null],
       ['{', null],
       ['    public function add(int $left, int $right): int', 'own'],
@@ -98,6 +106,7 @@ const samples: Sample[] = [
     label: 'Rust',
     repo: 'https://github.com/testparity/rust-sample',
     file: 'src/lib.rs',
+    foldedRanges: [[1, 2]],
     ownTest: 'lib_test.rs',
     otherTest: 'discount_test.rs',
     all: 80,
@@ -146,6 +155,22 @@ const ledger = [
 const active = ref(0)
 const ownOnly = ref(false)
 const sample = computed(() => samples[active.value])
+const sourceBlocks = computed(() => {
+  const lines = sample.value.code.map(([text, owner], index) => ({ text, owner, number: index + 1 }))
+  const blocks: Array<{ lines: typeof lines, folded: boolean }> = []
+  let offset = 0
+  for (const [first, last] of sample.value.foldedRanges ?? []) {
+    if (offset < first - 1) {
+      blocks.push({ lines: lines.slice(offset, first - 1), folded: false })
+    }
+    blocks.push({ lines: lines.slice(first - 1, last), folded: true })
+    offset = last
+  }
+  if (offset < lines.length) {
+    blocks.push({ lines: lines.slice(offset), folded: false })
+  }
+  return blocks
+})
 const shown = computed(() => (ownOnly.value ? sample.value.own : sample.value.all))
 const tabs = ref<HTMLButtonElement[]>([])
 
@@ -234,25 +259,39 @@ async function copyCommand() {
           </div>
         </div>
 
+        <div class="code-hint" id="sample-scroll-hint">Scroll through the source<span v-if="sample.foldedRanges"> or expand the hidden lines</span></div>
         <div
           :id="`panel-${sample.id}`"
           :key="sample.id"
           class="code"
+          :class="{ 'code-php': sample.id === 'php' }"
           role="tabpanel"
           :aria-labelledby="`tab-${sample.id}`"
+          aria-describedby="sample-scroll-hint"
           tabindex="0"
         >
-          <div
-            v-for="(line, index) in sample.code"
-            :key="index"
-            class="line"
-            :class="line[1] ? `is-${line[1]}` : ''"
-            :style="{ '--i': index }"
+          <component
+            :is="block.folded ? 'details' : 'div'"
+            v-for="block in sourceBlocks"
+            :key="block.lines[0].number"
+            :class="{ 'source-fold': block.folded }"
           >
-            <span class="ln">{{ index + 1 }}</span>
-            <span class="gutter" />
-            <code>{{ line[0] || ' ' }}</code>
-          </div>
+            <summary v-if="block.folded">
+              <span class="fold-closed">Show</span><span class="fold-open">Hide</span>
+              lines {{ block.lines[0].number }}–{{ block.lines[block.lines.length - 1].number }}
+            </summary>
+            <div
+              v-for="line in block.lines"
+              :key="line.number"
+              class="line"
+              :class="line.owner ? `is-${line.owner}` : ''"
+              :style="{ '--i': line.number - 1 }"
+            >
+              <span class="ln">{{ line.number }}</span>
+              <span class="gutter" />
+              <code>{{ line.text || ' ' }}</code>
+            </div>
+          </component>
         </div>
 
         <figcaption class="legend">
@@ -560,17 +599,53 @@ Per-file min
   background: var(--p-hatch);
 }
 
+.code-hint {
+  padding: 5px 16px;
+  border-bottom: 1px solid var(--p-line);
+  color: var(--p-muted);
+  font-size: 0.76rem;
+}
+
 .code {
-  padding: 12px 0 14px;
-  overflow-x: auto;
+  max-height: 13rem;
+  padding: 8px 0;
+  overflow: auto;
+  scrollbar-gutter: stable;
   font-family: var(--vp-font-family-mono);
   font-size: 0.84rem;
   line-height: 1.6;
 }
 
+.code-php {
+  max-height: 15.5rem;
+}
+
 .code:focus-visible {
   outline: 2px solid var(--p-own-strong);
   outline-offset: -2px;
+}
+
+.source-fold summary {
+  padding: 1px 16px;
+  border-block: 1px solid var(--p-line);
+  background: var(--vp-c-bg-soft);
+  color: var(--p-ink);
+  cursor: pointer;
+  font-size: 0.78rem;
+}
+
+.source-fold summary:hover {
+  text-decoration: underline;
+}
+
+.source-fold summary:focus-visible {
+  outline: 2px solid var(--p-own-strong);
+  outline-offset: -2px;
+}
+
+.source-fold:not([open]) .fold-open,
+.source-fold[open] .fold-closed {
+  display: none;
 }
 
 .line {
