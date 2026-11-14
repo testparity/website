@@ -602,8 +602,8 @@ Per-file min
   overflow: auto;
   scrollbar-gutter: stable;
   font-family: var(--vp-font-family-mono);
-  font-size: 0.84rem;
-  line-height: 1.6;
+  font-size: 0.75rem;
+  line-height: 1.45;
 }
 
 .code:focus-visible {
