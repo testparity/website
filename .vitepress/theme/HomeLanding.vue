@@ -614,7 +614,7 @@ Per-file min
 .source-fold summary {
   padding: 3px 16px;
   border-block: 1px solid var(--p-line);
-  background: var(--p-hatch);
+  background: var(--vp-c-bg-soft);
   color: var(--p-ink);
   cursor: pointer;
   font-size: 0.78rem;
