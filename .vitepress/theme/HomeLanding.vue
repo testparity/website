@@ -12,6 +12,7 @@ interface Sample {
   otherTest: string
   all: number
   own: number
+  preambleLines?: number
   code: Array<[string, Owner]>
 }
 
@@ -22,6 +23,7 @@ const samples: Sample[] = [
     label: 'PHP',
     repo: 'https://github.com/testparity/php-sample',
     file: 'src/Calculator.php',
+    preambleLines: 6,
     ownTest: 'CalculatorTest.php',
     otherTest: 'DiscountPolicyTest.php',
     all: 80,
@@ -104,6 +106,7 @@ const samples: Sample[] = [
     label: 'Rust',
     repo: 'https://github.com/testparity/rust-sample',
     file: 'src/lib.rs',
+    preambleLines: 2,
     ownTest: 'lib_test.rs',
     otherTest: 'discount_test.rs',
     all: 80,
@@ -152,6 +155,13 @@ const ledger = [
 const active = ref(0)
 const ownOnly = ref(false)
 const sample = computed(() => samples[active.value])
+const sourceBlocks = computed(() => {
+  const lines = sample.value.code.map(([text, owner], index) => ({ text, owner, number: index + 1 }))
+  const preamble = sample.value.preambleLines
+  return preamble
+    ? [{ lines: lines.slice(0, preamble), folded: true }, { lines: lines.slice(preamble), folded: false }]
+    : [{ lines, folded: false }]
+})
 const shown = computed(() => (ownOnly.value ? sample.value.own : sample.value.all))
 const tabs = ref<HTMLButtonElement[]>([])
 
@@ -240,7 +250,7 @@ async function copyCommand() {
           </div>
         </div>
 
-        <div class="code-hint" id="sample-scroll-hint">Scroll to view all {{ sample.code.length }} lines</div>
+        <div class="code-hint" id="sample-scroll-hint">Scroll through the source<span v-if="sample.preambleLines"> or expand the hidden lines</span></div>
         <div
           :id="`panel-${sample.id}`"
           :key="sample.id"
@@ -250,17 +260,28 @@ async function copyCommand() {
           aria-describedby="sample-scroll-hint"
           tabindex="0"
         >
-          <div
-            v-for="(line, index) in sample.code"
-            :key="index"
-            class="line"
-            :class="line[1] ? `is-${line[1]}` : ''"
-            :style="{ '--i': index }"
+          <component
+            :is="block.folded ? 'details' : 'div'"
+            v-for="block in sourceBlocks"
+            :key="block.lines[0].number"
+            :class="{ 'source-fold': block.folded }"
           >
-            <span class="ln">{{ index + 1 }}</span>
-            <span class="gutter" />
-            <code>{{ line[0] || ' ' }}</code>
-          </div>
+            <summary v-if="block.folded">
+              <span class="fold-closed">Show</span><span class="fold-open">Hide</span>
+              lines 1–{{ block.lines.length }}
+            </summary>
+            <div
+              v-for="line in block.lines"
+              :key="line.number"
+              class="line"
+              :class="line.owner ? `is-${line.owner}` : ''"
+              :style="{ '--i': line.number - 1 }"
+            >
+              <span class="ln">{{ line.number }}</span>
+              <span class="gutter" />
+              <code>{{ line.text || ' ' }}</code>
+            </div>
+          </component>
         </div>
 
         <figcaption class="legend">
@@ -588,6 +609,29 @@ Per-file min
 .code:focus-visible {
   outline: 2px solid var(--p-own-strong);
   outline-offset: -2px;
+}
+
+.source-fold summary {
+  padding: 3px 16px;
+  border-block: 1px solid var(--p-line);
+  background: var(--p-hatch);
+  color: var(--p-ink);
+  cursor: pointer;
+  font-size: 0.78rem;
+}
+
+.source-fold summary:hover {
+  text-decoration: underline;
+}
+
+.source-fold summary:focus-visible {
+  outline: 2px solid var(--p-own-strong);
+  outline-offset: -2px;
+}
+
+.source-fold:not([open]) .fold-open,
+.source-fold[open] .fold-closed {
+  display: none;
 }
 
 .line {
