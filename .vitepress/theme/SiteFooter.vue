@@ -32,6 +32,7 @@ const year = new Date().getUTCFullYear()
           <h2>Reference</h2>
           <a href="/guide/reference">CLI reference</a>
           <a href="/guide/ci-integration">CI integration</a>
+          <a href="/hosted">Hosted &amp; plans</a>
           <a href="/guide/plugins">Plugins</a>
           <a href="/specs/">Specifications</a>
         </div>

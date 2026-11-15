@@ -194,6 +194,7 @@ async function copyCommand() {
           <a class="button primary" href="/guide/getting-started">Get started</a>
           <a class="button" href="/guide/samples">Browse the samples</a>
         </div>
+        <p><a class="hosted-link" href="/hosted">Explore hosted coverage history</a></p>
         <p class="stack-note">Reads PHPUnit, Clover, Cobertura, and Parity JSON coverage from PHP, JavaScript, TypeScript, and Rust projects.</p>
       </div>
 
@@ -1044,4 +1045,5 @@ a:focus-visible {
     align-items: stretch;
   }
 }
+.hosted-link { color: var(--p-own-strong); font-weight: 650; text-decoration: underline; text-underline-offset: .2em; }
 </style>

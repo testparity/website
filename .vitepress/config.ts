@@ -60,6 +60,7 @@ export default defineConfig({
     nav: [
       { text: 'Guide', link: '/guide/getting-started' },
       { text: 'Samples', link: '/guide/samples' },
+      { text: 'Hosted & Plans', link: '/hosted' },
       { text: 'Specs', link: '/specs/' },
     ],
 
