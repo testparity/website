@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { computed, ref } from 'vue'
-
-type Owner = 'own' | 'borrowed' | 'none' | null
+import { formatCoverage as format, nextTab, sourceBlocks as buildSourceBlocks } from './showcase/source'
+import type { Owner } from './showcase/source'
 
 interface Sample {
   id: string
@@ -155,30 +155,16 @@ const ledger = [
 const active = ref(0)
 const ownOnly = ref(false)
 const sample = computed(() => samples[active.value])
-const sourceBlocks = computed(() => {
-  const lines = sample.value.code.map(([text, owner], index) => ({ text, owner, number: index + 1 }))
-  const preamble = sample.value.preambleLines
-  return preamble
-    ? [{ lines: lines.slice(0, preamble), folded: true }, { lines: lines.slice(preamble), folded: false }]
-    : [{ lines, folded: false }]
-})
+const sourceBlocks = computed(() => buildSourceBlocks(sample.value.code, sample.value.preambleLines))
 const shown = computed(() => (ownOnly.value ? sample.value.own : sample.value.all))
 const tabs = ref<HTMLButtonElement[]>([])
 
-function selectTab(index: number) {
-  active.value = (index + samples.length) % samples.length
-  tabs.value[active.value]?.focus()
-}
-
 function onTabKey(event: KeyboardEvent, index: number) {
-  if (event.key === 'ArrowRight') selectTab(index + 1)
-  else if (event.key === 'ArrowLeft') selectTab(index - 1)
-  else return
+  const next = nextTab(event.key, index, samples.length)
+  if (next === null) return
+  active.value = next
+  tabs.value[next]?.focus()
   event.preventDefault()
-}
-
-function format(value: number) {
-  return `${Number.isInteger(value) ? value : value.toFixed(2)}%`
 }
 
 const command = 'composer global require testparity/parity'

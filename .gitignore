@@ -7,3 +7,4 @@ CLAUDE.md
 graphify-out/
 playwright-report/
 test-results/
+.parity/

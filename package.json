@@ -11,6 +11,7 @@
   },
   "devDependencies": {
     "@playwright/test": "1.61.0",
+    "c8": "11.0.0",
     "vitepress": "2.0.0-alpha.18",
     "vue": "3.5.44"
   }
