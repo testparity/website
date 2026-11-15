@@ -69,11 +69,12 @@ const files = [
     </section>
 
     <section id="plans" class="hosted-section" aria-labelledby="plans-title">
-      <h2 id="plans-title">Plans</h2>
+      <h2 id="plans-title">Plans and pricing</h2>
       <div class="plan-grid">
         <article class="plan">
-          <p class="eyebrow">Free · Open source</p>
+          <p class="eyebrow">Open source</p>
           <h3>TestParity CLI</h3>
+          <p class="plan-price">Free</p>
           <p>For running coverage checks locally and in your own CI.</p>
           <ul>
             <li>Associated-test and full-suite coverage comparison</li>
@@ -85,13 +86,14 @@ const files = [
         <article class="plan hosted-plan">
           <p class="eyebrow">Early access</p>
           <h3>TestParity Hosted</h3>
+          <p class="plan-price">$5/month</p>
           <p>For keeping report history and reviewing coverage changes between runs.</p>
           <ul>
             <li>Dashboard for multiple projects</li>
             <li>CI uploads and per-commit run history</li>
             <li>File-level gap changes between runs</li>
           </ul>
-          <p class="plan-note">Paid plan pricing and limits will be announced before launch.</p>
+          <p class="plan-note">Planned launch price. Plan limits will be announced before launch.</p>
           <a class="hosted-button primary" href="https://app.testparity.com/signup">Create a hosted account</a>
         </article>
       </div>
@@ -196,6 +198,7 @@ article p { line-height: 1.55; }
 .plan { display: flex; flex-direction: column; align-items: flex-start; }
 .plan .eyebrow { color: var(--p-own-strong); margin-bottom: .6rem; }
 .plan h3 { font-size: clamp(1.35rem, 2.5vw, 1.8rem); }
+.plan .plan-price { color: var(--p-ink); font-size: 2rem; font-weight: 750; line-height: 1.2; margin-block: .25rem .75rem; }
 .plan ul { list-style: disc; padding-left: 1.15rem; margin: 1rem 0; }
 .plan li + li { margin-top: .4rem; }
 .plan .hosted-button { margin-top: auto; }
