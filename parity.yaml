@@ -1,0 +1,24 @@
+settings:
+  namespace_roots:
+    .vitepress/theme/showcase: Showcase
+    tests/unit: Tests
+  source_extension: ".ts"
+  test_suffix: ".test"
+  test_extension: ".ts"
+  namespace_separator: "."
+
+coverage_xml: .parity/per-test
+
+test:
+  command: "./node_modules/.bin/c8 --include='.vitepress/theme/showcase/**/*.ts' --reporter=clover --reports-dir=$(dirname {coverage}) node --experimental-strip-types --test {test_abs}"
+  coverage: ".parity/tmp/{slug}/clover.xml"
+  timeout: 60
+
+structure:
+  - name: Homepage showcase
+    paths:
+      source: .vitepress/theme/showcase
+      test: tests/unit
+    rules:
+      - matched-coverage:
+          min: 80

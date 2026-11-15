@@ -36,6 +36,12 @@ npm run test:e2e
 
 The test command builds the site, starts an isolated preview on port `43173`, and runs Chromium at `390×844`.
 
+TestParity checks the landing page showcase logic with Node.js 22, c8, and the tests in `tests/unit`. In CI, it uploads line ownership and posts the associated-test coverage on pull requests. The mobile browser tests cover the rendered interface separately.
+
+```bash
+parity test --format=github
+```
+
 ## Build
 
 ```bash
