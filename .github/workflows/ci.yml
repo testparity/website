@@ -49,7 +49,7 @@ jobs:
 
       - name: Install TestParity
         run: |
-          composer global require testparity/parity:1.3.0 --prefer-dist --no-progress --no-interaction
+          composer global require testparity/parity:1.4.1 --prefer-dist --no-progress --no-interaction
           composer global config bin-dir --absolute >> "$GITHUB_PATH"
 
       - name: Check homepage showcase coverage
@@ -80,7 +80,7 @@ jobs:
     if: ${{ !cancelled() && github.event_name == 'pull_request' && needs.ci.outputs.parity-artifact-id != '' }}
     permissions:
       pull-requests: write
-    uses: testparity/cli/.github/workflows/parity-comment.yml@v1.3.0
+    uses: testparity/cli/.github/workflows/parity-comment.yml@18489a20181f4d012a93563481e179a6b8b23ecc # v1.4.1
     with:
       artifact-name: testparity-website-coverage
       report-path: comment.md
