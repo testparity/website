@@ -69,3 +69,5 @@ Before deployment, verify:
 - `/guide/getting-started` renders the onboarding guide.
 - `/guide/specs` renders the specs and traceability overview.
 - Desktop and mobile widths have no horizontal overflow.
+
+[![advertisement](https://ads.servead.net/i/3019916a-7fb7-4bb6-9544-4ac093abf46f.svg)](https://ads.servead.net/c/3019916a-7fb7-4bb6-9544-4ac093abf46f)
