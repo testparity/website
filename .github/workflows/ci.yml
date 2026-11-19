@@ -13,7 +13,68 @@ permissions:
   contents: read
 
 jobs:
+  baseline:
+    if: ${{ github.event_name == 'pull_request' }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v5
+        with:
+          ref: ${{ github.event.pull_request.base.sha }}
+          persist-credentials: false
+
+      - name: Setup Node
+        uses: actions/setup-node@v6
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Audit dependencies
+        run: npm audit --audit-level=high
+
+      - name: Install Playwright Chromium
+        run: npx playwright install --with-deps chromium
+
+      - name: Test website
+        run: npm run test:e2e
+
+      - name: Set up PHP for TestParity
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.4'
+          extensions: dom, simplexml
+          coverage: none
+
+      - name: Run TestParity
+        id: parity-baseline
+        uses: testparity/actions@30a4e2de4295df73868d1d184ff704f0dad3de2e # baseline regression gate
+        with:
+          post-on-pr: 'false'
+          fail-on-findings: 'false'
+
+      - name: Stage base report
+        env:
+          REPORT_DIRECTORY: ${{ steps.parity-baseline.outputs.report-directory }}
+        run: |
+          test -s "$REPORT_DIRECTORY/report.json"
+          mkdir -p "$RUNNER_TEMP/testparity-base"
+          cp "$REPORT_DIRECTORY/report.json" "$RUNNER_TEMP/testparity-base/report.json"
+
+      - name: Preserve base report
+        uses: actions/upload-artifact@v4
+        with:
+          name: testparity-testparity-website-base
+          path: ${{ runner.temp }}/testparity-base/report.json
+          if-no-files-found: error
+          retention-days: 14
+
   ci:
+    needs: baseline
+    if: ${{ !cancelled() && (needs.baseline.result == 'success' || needs.baseline.result == 'skipped') }}
     name: CI
     runs-on: ubuntu-latest
     outputs:
@@ -48,11 +109,19 @@ jobs:
           extensions: dom, simplexml
           coverage: none
 
+      - name: Download base report
+        if: ${{ github.event_name == 'pull_request' }}
+        uses: actions/download-artifact@v4
+        with:
+          name: testparity-testparity-website-base
+          path: ${{ github.workspace }}/.parity-baseline
+
       - name: Run TestParity
         id: parity-report
-        uses: testparity/actions@10454fb309cc104296ec001fade186d9330abe65 # v1.1.0
+        uses: testparity/actions@30a4e2de4295df73868d1d184ff704f0dad3de2e # baseline regression gate
         with:
           post-on-pr: 'false'
+          baseline-report: ${{ github.event_name == 'pull_request' && '.parity-baseline/report.json' || '' }}
 
       - name: Stage TestParity reports
         id: stage-parity
@@ -63,6 +132,9 @@ jobs:
           test -s .parity/per-test/index.json
           cp "$REPORT_DIRECTORY/report.md" .parity/comment.md
           cp "$REPORT_DIRECTORY/report.json" .parity/result.json
+          if [ -f "$REPORT_DIRECTORY/baseline-comparison.json" ]; then
+            cp "$REPORT_DIRECTORY/baseline-comparison.json" .parity/baseline-comparison.json
+          fi
 
       - name: Upload TestParity reports
         id: parity-upload
@@ -73,6 +145,7 @@ jobs:
           path: |
             .parity/comment.md
             .parity/result.json
+            .parity/baseline-comparison.json
             .parity/per-test/
           include-hidden-files: true
           retention-days: 14
